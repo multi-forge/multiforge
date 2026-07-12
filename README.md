@@ -82,8 +82,8 @@ TV Box ➔ Detecção ➔ Banco de Compatibilidade ➔ Imagem Recomendada ➔ In
 
 | TV BOX      | Processador     | Memória | Wi-Fi       | Instalação / Status |
 |-------------|-----------------|:-------:|-------------|:-------------------:|
-| BTV E10     | Rockchip RK3566 | 4GB     | ✅ AP6256   | Suportado ✅        |
-| ExemploBox  | Amlogic S905X3  | 2GB     | ❌ Realtek  | Em testes ⚠️        |
+| BTV E10     | Rockchip RK3566 | 2GB     | ✅ AP6256   | Suportado ✅        |
+**Mais em breve...**
 
 ## 🤝 <a id="contribuindo"/>Contribuindo
 
