@@ -1,151 +1,94 @@
-<div align="center">
+![GitHub followers](https://img.shields.io/github/followers/multi-forge?style=social) ![GitHub User's stars](https://img.shields.io/github/stars/multi-forge?style=social) <img src="https://img.shields.io/badge/Linux-FCC624?style=social&logo=linux&logoColor=black" alt="multiforge" />
 
-# 🔨 MultiForge
+<h1 align="center">
+  <br>
+  MultiForge
+  <br>
+</h1>
 
-### Transformando hardware reaproveitado em infraestrutura digital modular.
+<p align="center">
+  <!-- Adicione o banner do projeto aqui -->
+  <img src="https://via.placeholder.com/1280x300.png?text=MultiForge+Banner" alt="MultiForge Banner" width="1280">
+</p>
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-orange)
-![Plataforma](https://img.shields.io/badge/plataforma-ARM%20%7C%20TV%20Box-green)
-![Licença](https://img.shields.io/badge/licença-MIT-blue)
+<h4 align="center">O projeto "MultiForge" visa transformar TV Boxes e hardware reaproveitado em infraestrutura digital modular. <a href="https://github.com/multi-forge/multiforge" target="_blank">MultiForge</a>.</h4>
 
-</div>
+> Acreditamos que milhares de TV Boxes descartadas ou apreendidas podem deixar de ser lixo eletrônico e se tornar equipamentos úteis. Ao detectar automaticamente o hardware e provisionar o sistema correto, estamos democratizando o acesso a servidores de borda, bibliotecas digitais e nós IoT, transformando hardware reaproveitado em ferramentas ativas para escolas, universidades e makerspaces.
+
+<p align="center">
+  <!-- Imagem secundária / showcase -->
+  <img src="https://via.placeholder.com/1280x400.png?text=Showcase+MultiForge" alt="MultiForge Showcase" width="1280">
+</p>
+
+| MultiForge CLI | ForgeHub Módulos |
+| ----------- | ----------- |
+|<img src="https://via.placeholder.com/600x300.png?text=MultiForge+CLI" />|<img src="https://via.placeholder.com/600x300.png?text=ForgeHub" />|
+
+### Ajustes e melhorias
+
+O projeto está em pleno desenvolvimento. As próximas etapas incluem:
+
+- [x] Criação da estrutura de módulos base (Mina, Scraping, NoNail).
+- [x] Estruturação do repositório MultiForge.
+- [ ] Construção do ForgeDB (Banco de compatibilidade de hardware).
+- [ ] Desenvolvimento da CLI para detecção automática (SoC, Memória, Wi-Fi).
+- [ ] Automação de provisionamento inteligente (ForgeOS / Armbian).
+- [ ] Disponibilização de catálogo expansível no ForgeHub.
+
+## 📗 Sumário
+
+ 1. 🌍 [Sobre a Plataforma](#sobre)
+ 2. 🎯 [Objetivos Principais](#objetivos)
+ 3. ✨ [Recursos e Funcionamento](#recursos)
+ 4. 📦 [Ecossistema](#ecossistema)
+ 5. 🔍 [Banco de Compatibilidade (Exemplo)](#compatibilidade)
+ 6. 🤝 [Contribuindo](#contribuindo)
+ 7. 📜 [Licença](#licenca)
 
 ---
 
-## 🌍 Sobre
+## 🌍 <a id="sobre"/>Sobre a Plataforma
 
-O **MultiForge** é uma plataforma open source criada para simplificar o reaproveitamento de TV Boxes e outros dispositivos ARM.
+O **MultiForge** é uma plataforma open source criada para simplificar o reaproveitamento de TV Boxes e outros dispositivos ARM. Seu objetivo é eliminar a complexidade na instalação de sistemas, oferecendo uma arquitetura onde: **Você constrói uma vez, detecta automaticamente e implanta em qualquer lugar.**
 
-Seu objetivo é eliminar a complexidade envolvida na instalação e configuração desses equipamentos, detectando automaticamente o hardware, recomendando a imagem Linux mais compatível e permitindo a instalação de módulos prontos para diferentes cenários de uso. 
-
-Mais do que instalar um sistema operacional, o MultiForge busca transformar hardware reaproveitado em infraestrutura digital útil para escolas, universidades, laboratórios, prefeituras, bibliotecas e projetos de edge computing. O coração do projeto é uma **base de conhecimento aberta de compatibilidade de hardware**, documentando SoCs, DTBs, firmwares, drivers e problemas conhecidos.
-
----
-
-## 🎯 Objetivos
+## 🎯 <a id="objetivos"/>Objetivos Principais
 
 - 🔍 **Detectar automaticamente** o hardware da TV Box.
-- ⚙️ **Selecionar a imagem Linux** mais compatível baseada em testes empíricos.
-- 📦 **Automatizar o processo de instalação** e provisionamento.
-- 🧩 **Disponibilizar um catálogo de módulos** (Assistentes IA, MQTT, Dashboards, etc).
-- 🌐 **Criar uma base aberta de compatibilidade de hardware** (documentando DTBs, bootloaders, Wi-Fi, etc).
-- ♻️ **Incentivar o reaproveitamento** de equipamentos eletrônicos, transformando lixo eletrônico em ferramentas ativas.
+- ⚙️ **Selecionar a imagem Linux** mais compatível baseada na base de dados.
+- 📦 **Automatizar o processo** de instalação de forma amigável.
+- 🧩 **Oferecer módulos** instaláveis facilmente (Assistentes IA, Dashboards, MQTT, etc).
 
----
-
-## 🏗 Como Funciona
+## ✨ <a id="recursos"/>Recursos e Funcionamento
 
 ```text
-TV Box
-   │
-   ▼
-Detecção automática
-   │
-   ▼
-Identificação do hardware
-   │
-   ▼
-Banco de compatibilidade (Hardware Database)
-   │
-   ▼
-Imagem recomendada
-   │
-   ▼
-Instalação automática
-   │
-   ▼
-Marketplace de módulos (MultiForge Hub)
+TV Box ➔ Detecção ➔ Banco de Compatibilidade ➔ Imagem Recomendada ➔ Instalação ➔ Marketplace (Hub)
 ```
+- **Detecção H/W**: Identificação de SoC, memória, Wi-Fi e periféricos essenciais.
+- **Instalação Simplificada**: Fluxos consistentes para gravação via eMMC, SD, ou MaskROM.
+- **Provisionamento Inteligente**: Configuração aplicada automaticamente baseada na board detectada.
 
----
-
-## ✨ Principais Recursos
-
-- **Detecção automática de hardware**: Identificação de SoC, memória, Wi-Fi e outros periféricos.
-- **Banco de compatibilidade de placas**: Uma wiki/banco de dados real com as minúcias de cada board (DTB, u-boot, kernel, firmware).
-- **Instalação simplificada**: Fluxos amigáveis para gravação em eMMC/SD/MaskROM.
-- **Provisionamento inteligente**: Configuração automática com base na board.
-- **Marketplace de módulos (ForgeHub)**: Adicione rapidamente Samba, Node-RED, IA, MQTT e mais.
-- **Arquitetura modular**: Suporte a diversas distribuições baseadas no hardware (Armbian, Debian, ForgeOS).
-
----
-
-## 📦 Ecossistema
-
-O MultiForge será composto por diversos subprojetos:
+## 📦 <a id="ecossistema"/>Ecossistema
 
 | Projeto | Descrição |
 |---------|-----------|
 | **MultiForge CLI** | Interface de linha de comando (`multi detect`, `multi install`). |
-| **ForgeDB** | Banco robusto de compatibilidade de hardware. |
-| **ForgeHub** | Catálogo de módulos e serviços de software. |
-| **ForgeOS** | Imagens Linux otimizadas para hardware legado. |
-| **Forge Agent** | Serviço local de gerenciamento e atualizações OTA. |
+| **ForgeDB** | Banco robusto de compatibilidade de hardware (DTBs, drivers). |
+| **ForgeHub** | Catálogo de módulos e serviços de software open-source. |
+| **ForgeOS** | Imagens Linux otimizadas nativamente para hardware legado. |
 
----
+## 🔍 <a id="compatibilidade"/>Banco de Compatibilidade (Exemplo)
 
-## 🚀 Exemplo de Uso
+> Este é um exemplo de como documentaremos as TV Boxes suportadas pelo projeto e sua viabilidade de hardware.
 
-```bash
-multiforge detect
-```
-```text
-Hardware detectado
+| TV BOX      | Processador     | Memória | Wi-Fi       | Instalação / Status |
+|-------------|-----------------|:-------:|-------------|:-------------------:|
+| BTV E10     | Rockchip RK3566 | 4GB     | ✅ AP6256   | Suportado ✅        |
+| ExemploBox  | Amlogic S905X3  | 2GB     | ❌ Realtek  | Em testes ⚠️        |
 
-Placa: BTV E10
-SoC: Rockchip RK3566
-Memória: 4 GB
-Wi-Fi: AP6256
+## 🤝 <a id="contribuindo"/>Contribuindo
 
-Imagem recomendada:
-✓ ForgeOS
-✓ EducaBox
-✓ Armbian
-```
+Toda contribuição é bem-vinda para catalogar e suportar novos hardwares! Colabore testando TV Boxes, relatando bugs, descobrindo DTBs compatíveis ou criando novos módulos.
 
-```bash
-multiforge install
-```
-```text
-Imagem selecionada. Baixando... Instalando... Configuração concluída.
-```
+## 📜 <a id="licenca"/>Licença
 
-```bash
-multiforge modules
-```
-```text
-Módulos disponíveis:
-✓ Assistente IA (Mina)
-✓ Broker MQTT
-✓ Dashboard
-✓ Git Server
-✓ Biblioteca Digital
-✓ Node-RED
-```
-
----
-
-## 🤝 Contribuindo
-
-Toda contribuição é bem-vinda para catalogar e suportar novos hardwares!
-Você pode colaborar com:
-- Novos perfis de hardware e envio de testes (logs, compatibilidade de recursos).
-- Testes práticos em TV Boxes variadas.
-- Documentação, correção de bugs e melhoria na detecção automática (DTB, drivers, SoCs).
-- Módulos para o ForgeHub (como o módulo assistente de IA Mina).
-
----
-
-## 📜 Licença
-
-Este projeto é distribuído sob a licença **MIT**.
-
----
-
-<div align="center">
-
-### Reaproveitar hardware. Simplificar implantações. Compartilhar conhecimento.
-
-**Detectar. Provisionar. Transformar.**
-
-</div>
+Projeto distribuído sob a licença **MIT**.
