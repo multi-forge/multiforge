@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  <img src="https://github.com/multi-forge/multiforge/blob/main/imagens/logo.png?raw=true" width="200">
+  <img src="https://github.com/multi-forge/multiforge/blob/main/imagens/logo.png?raw=true" width="450">
   <br>
   MultiForge
   <br>
