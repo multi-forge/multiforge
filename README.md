@@ -1,30 +1,14 @@
 ![GitHub followers](https://img.shields.io/github/followers/multi-forge?style=social) ![GitHub User's stars](https://img.shields.io/github/stars/multi-forge?style=social) <img src="https://img.shields.io/badge/Linux-FCC624?style=social&logo=linux&logoColor=black" alt="multiforge" />
 
-<h1 align="center">
-  <br>
-  <img src="https://github.com/multi-forge/multiforge/blob/main/imagens/logo.png?raw=true" width="450">
-  <br>
-  MultiForge
-  <br>
-</h1>
-
 <p align="center">
-  <!-- Adicione o banner do projeto aqui -->
-  <img src="https://via.placeholder.com/1280x300.png?text=MultiForge+Banner" alt="MultiForge Banner" width="1280">
+  <img src="https://github.com/multi-forge/multiforge/blob/main/imagens/logo.png?raw=true" width="1280" alt="MultiForge Logo/Banner">
 </p>
 
 <h4 align="center">O projeto "MultiForge" visa transformar TV Boxes e hardware reaproveitado em infraestrutura digital modular. <a href="https://github.com/multi-forge/multiforge" target="_blank">MultiForge</a>.</h4>
 
 > Acreditamos que milhares de TV Boxes descartadas ou apreendidas podem deixar de ser lixo eletrônico e se tornar equipamentos úteis. Ao detectar automaticamente o hardware e provisionar o sistema correto, estamos democratizando o acesso a servidores de borda, bibliotecas digitais e nós IoT, transformando hardware reaproveitado em ferramentas ativas para escolas, universidades e makerspaces.
 
-<p align="center">
-  <!-- Imagem secundária / showcase -->
-  <img src="https://via.placeholder.com/1280x400.png?text=Showcase+MultiForge" alt="MultiForge Showcase" width="1280">
-</p>
 
-| MultiForge CLI | ForgeHub Módulos |
-| ----------- | ----------- |
-|<img src="https://via.placeholder.com/600x300.png?text=MultiForge+CLI" />|<img src="https://via.placeholder.com/600x300.png?text=ForgeHub" />|
 
 ### Ajustes e melhorias
 
