@@ -144,7 +144,7 @@ O BTV E10 padrão vem com uma versão customizada proprietária do sistema Andro
   2. Coloque os scripts `aml_autoscript` e `s905_autoscript` na raiz da partição de boot.
   3. Copie o arquivo `meson-g12a-sei510.dtb` para a pasta `/dtb/amlogic/`.
   4. Mantenha pressionado o botão de reset (dentro da entrada AV) com um clipe/palito e ligue o aparelho na tomada.
-* **Risks**: Extremamente baixo. Não sobrescreve o eMMC interno a menos que o comando de instalação seja explicitamente executado.
+* **Risco**: Extremamente baixo. Não sobrescreve o eMMC interno a menos que o comando de instalação seja explicitamente executado.
 * **Status de Suporte**: 🟢 Totalmente Operacional.
 
 ### Método 2: Conversão via Script U-Boot para eMMC
@@ -153,7 +153,7 @@ O BTV E10 padrão vem com uma versão customizada proprietária do sistema Andro
   1. Inicialize o sistema live.
   2. Execute o script `\root\install-aml.sh` (ou `install-aml.sh`).
   3. Altere o UUID do dispositivo de boot em `armbianEnv.txt` para apontar para a nova partição `BOOT_EMMC`.
-* **Risks**: Alto. Sobrescreve o sistema Android de fábrica. Pode causar soft-brick se interrompido.
+* **Risco**: Alto. Sobrescreve o sistema Android de fábrica. Pode causar soft-brick se interrompido.
 * **Status de Suporte**: 🟢 Suportado.
 
 ### Método 3: USB Burning Tool (Recuperação)
@@ -162,7 +162,7 @@ O BTV E10 padrão vem com uma versão customizada proprietária do sistema Andro
   1. Carregue o firmware original `.img` no software.
   2. Pressione o botão de reset interno da porta AV e conecte o cabo USB ao computador.
   3. Inicie o processo de flashing.
-* **Risks**: Moderado.
+* **Risco**: Moderado.
 * **Status de Suporte**: 🟢 Suportado.
 
 ---
@@ -234,5 +234,5 @@ A desmontagem principal e o procedimento de conversão de software baseiam-se no
 * Definições de Device Tree do Linux Mainline para o SoC Amlogic G12A: [kernel.org](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/arm/amlogic.yaml).
 
 ### Recursos da Comunidade
-* Repositório do projeto Educabox: [github.com/educabox/educabox](https://github.com/educabox/educabox).
+* Repositório Educabox (fonte de dados e referências de hardware para o BTV E10): [github.com/educabox/educabox](https://github.com/educabox/educabox).
 * Tópicos do fórum Armbian sobre dispositivos S905X2.

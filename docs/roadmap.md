@@ -10,7 +10,7 @@ Desenvolvimento estruturado em fases de maturidade da plataforma:
   * ForgeDB estruturado de forma simplificada em arquivos YAML declarativos.
   * ForgeImager compilável e capaz de gravar e injetar configurações via `forge.yaml`.
   * Criação do Forge Provisioner básico capaz de ler o manifesto e configurar usuário/rede.
-  * Suporte inicial a imagens parceiras (Armbian/ForgeOS).
+  * Lançamento da imagem ForgeOS como distribuição principal, com suporte a imagens compatíveis (Armbian).
 
 ## 🚀 Phase 2 — Community
 * **Foco**: Expansão do ecossistema e ferramentas automatizadas de inventário.

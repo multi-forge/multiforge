@@ -10,7 +10,7 @@ family: Cortex-A53
 series: null
 category: TV Box
 status: Suportado
-description: "BTV E10 TV Box featuring Rockchip RK3566 and AP6256 Wi-Fi"
+description: "BTV E10 TV Box com SoC Amlogic S905X2, 2GB LPDDR4, 8GB eMMC e Wi-Fi RTL8189FTV"
 tags:
   - btv-e10
   - rk3566
@@ -71,14 +71,11 @@ linux:
   supported_distributions:
     - ForgeOS
     - Armbian
-    - ForgeOS
 compatibility:
   forgeos:
     status: supported
     notes: "ForgeOS Server (Bullseye ARM64), ForgeOS IoT Gateway (Alpine ARM64), ForgeOS Media Station (Kodi ARM64)"
   armbian:
-    status: supported
-  forgeos:
     status: supported
   debian:
     status: null
@@ -90,7 +87,7 @@ compatibility:
     status: null
 features:
   wifi: true
-  bluetooth: true
+  bluetooth: false
   ethernet: true
   gpio: null
   uart: null
@@ -205,7 +202,7 @@ sources:
     branch: main
     commit: null
     file: instalacao/instalacao-educabox-live.md
-    section: "Download Educabox [Armbian]"
+    section: "Guia de Instalação ForgeOS/Armbian"
     url: https://github.com/educabox/educabox/blob/main/instalacao/instalacao-educabox-live.md
     confidence: high
   - repository: multi-forge/multi-forge
