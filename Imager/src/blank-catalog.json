@@ -63,7 +63,8 @@
       ],
       "capabilities": [
         "passwordless_sudo",
-        "usb_otg"
+        "usb_otg",
+        "forge_scraping"
       ]
     },
     {
@@ -85,7 +86,8 @@
         "s905x3"
       ],
       "capabilities": [
-        "passwordless_sudo"
+        "passwordless_sudo",
+        "forge_nonail"
       ]
     },
     {
@@ -105,6 +107,9 @@
         "h6",
         "h616",
         "s905x3"
+      ],
+      "capabilities": [
+        "forge_mina"
       ]
     },
     {

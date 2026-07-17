@@ -514,6 +514,162 @@ QByteArray CustomisationGenerator::generateSystemdScript(const QVariantMap& s, c
         line(QStringLiteral("fi"), script);
     }
 
+    // MultiForge module provisioning is intentionally expressed as one-shot
+    // systemd units. firstrun.sh runs before the target has proved it has a
+    // working network, whereas these units wait for network-online.target.
+    const bool forgeScrapingEnabled = s.value("forgeScrapingEnabled").toBool();
+    const QString forgeScrapingPort = s.value("forgeScrapingPort").toString().trimmed();
+    const QString forgeScrapingDataSourceUrl = s.value("forgeScrapingDataSourceUrl").toString().trimmed();
+    const bool forgeNoNailEnabled = s.value("forgeNoNailEnabled").toBool();
+    const QString forgeNoNailProvider = s.value("forgeNoNailProvider").toString().trimmed().toLower();
+    const QString forgeNoNailModel = s.value("forgeNoNailModel").toString().trimmed();
+    const QString forgeNoNailApiKey = s.value("forgeNoNailApiKey").toString();
+    const bool forgeMinaEnabled = s.value("forgeMinaEnabled").toBool();
+
+    if (forgeScrapingEnabled) {
+        const QString apiPort = forgeScrapingPort.isEmpty() ? QStringLiteral("8000") : forgeScrapingPort;
+        const QString dataSourceUrl = forgeScrapingDataSourceUrl.isEmpty()
+            ? QStringLiteral("https://api.open-meteo.com/v1")
+            : forgeScrapingDataSourceUrl;
+
+        line(QStringLiteral("# Configure MultiForge Academic Scraping provisioning"), script);
+        line(QStringLiteral("install -d -m 0755 /opt/multi-forge"), script);
+        line(QStringLiteral("cat > /opt/multi-forge/provision-scraping.sh <<'EOF'"), script);
+        line(QStringLiteral("#!/bin/sh"), script);
+        line(QStringLiteral("set -eu"), script);
+        line(QStringLiteral("if [ ! -d /opt/scraping/.git ]; then"), script);
+        line(QStringLiteral("  rm -rf /opt/scraping"), script);
+        line(QStringLiteral("  git clone https://github.com/alguemaiYT/Scraping4Hackathon.git /opt/scraping"), script);
+        line(QStringLiteral("fi"), script);
+        line(QStringLiteral("if [ ! -f /opt/scraping/.env ]; then"), script);
+        line(QStringLiteral("  cp /opt/scraping/.env.example /opt/scraping/.env"), script);
+        line(QStringLiteral("fi"), script);
+        line(QStringLiteral("sed -i 's|^API_PORT=.*|API_PORT=") + apiPort + QStringLiteral("|' /opt/scraping/.env"), script);
+        line(QStringLiteral("sed -i 's|^DATA_SOURCE_BASE_URL=.*|DATA_SOURCE_BASE_URL=") + dataSourceUrl + QStringLiteral("|' /opt/scraping/.env"), script);
+        line(QStringLiteral("docker compose -f /opt/scraping/docker-compose.yml up -d --build"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("chmod 0755 /opt/multi-forge/provision-scraping.sh"), script);
+        line(QStringLiteral("cat > /etc/systemd/system/multi-forge-scraping.service <<'EOF'"), script);
+        line(QStringLiteral("[Unit]"), script);
+        line(QStringLiteral("Description=Provision MultiForge Academic Scraping API"), script);
+        line(QStringLiteral("Wants=network-online.target docker.service"), script);
+        line(QStringLiteral("After=network-online.target docker.service"), script);
+        line(QStringLiteral("ConditionPathExists=/usr/bin/docker"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Service]"), script);
+        line(QStringLiteral("Type=oneshot"), script);
+        line(QStringLiteral("ExecStart=/opt/multi-forge/provision-scraping.sh"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Install]"), script);
+        line(QStringLiteral("WantedBy=multi-user.target"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("systemctl enable multi-forge-scraping.service"), script);
+    }
+
+    if (forgeNoNailEnabled) {
+        const QString provider = forgeNoNailProvider.isEmpty() ? QStringLiteral("anthropic") : forgeNoNailProvider;
+        const QString model = forgeNoNailModel.isEmpty() ? QStringLiteral("claude-sonnet-4-20250514") : forgeNoNailModel;
+        const QString apiKeyEnv = provider == QLatin1String("anthropic") ? QStringLiteral("ANTHROPIC_API_KEY")
+            : provider == QLatin1String("openai") ? QStringLiteral("OPENAI_API_KEY")
+            : provider == QLatin1String("groq") ? QStringLiteral("GROQ_API_KEY")
+            : provider == QLatin1String("gemini") ? QStringLiteral("GEMINI_API_KEY")
+            : QStringLiteral("NONAIL_API_KEY");
+
+        line(QStringLiteral("# Configure MultiForge NoNail provisioning"), script);
+        line(QStringLiteral("install -d -m 0755 /opt/multi-forge"), script);
+        line(QStringLiteral("cat > /opt/multi-forge/provision-nonail.sh <<'EOF'"), script);
+        line(QStringLiteral("#!/bin/sh"), script);
+        line(QStringLiteral("set -eu"), script);
+        line(QStringLiteral("if [ ! -d /opt/nonail/.git ]; then"), script);
+        line(QStringLiteral("  rm -rf /opt/nonail"), script);
+        line(QStringLiteral("  git clone https://github.com/alguemaiYT/NoNail.git /opt/nonail"), script);
+        line(QStringLiteral("fi"), script);
+        line(QStringLiteral("python3 -m venv /opt/nonail/.venv"), script);
+        line(QStringLiteral("/opt/nonail/.venv/bin/pip install --upgrade pip"), script);
+        line(QStringLiteral("/opt/nonail/.venv/bin/pip install /opt/nonail"), script);
+        line(QStringLiteral("install -d -m 0700 /etc/nonail"), script);
+        line(QStringLiteral("cat > /etc/nonail/config.yaml <<'CONFIG'"), script);
+        line(QStringLiteral("provider: ") + provider, script);
+        line(QStringLiteral("model: ") + model, script);
+        line(QStringLiteral("api_key_env: ") + apiKeyEnv, script);
+        line(QStringLiteral("mcp_server:"), script);
+        line(QStringLiteral("  enabled: true"), script);
+        line(QStringLiteral("  transport: stdio"), script);
+        line(QStringLiteral("CONFIG"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("chmod 0755 /opt/multi-forge/provision-nonail.sh"), script);
+        line(QStringLiteral("cat > /etc/systemd/system/multi-forge-nonail.service <<'EOF'"), script);
+        line(QStringLiteral("[Unit]"), script);
+        line(QStringLiteral("Description=Provision MultiForge NoNail AI Agent"), script);
+        line(QStringLiteral("Wants=network-online.target"), script);
+        line(QStringLiteral("After=network-online.target"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Service]"), script);
+        line(QStringLiteral("Type=oneshot"), script);
+        line(QStringLiteral("ExecStart=/opt/multi-forge/provision-nonail.sh"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Install]"), script);
+        line(QStringLiteral("WantedBy=multi-user.target"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("systemctl enable multi-forge-nonail.service"), script);
+
+        if (!forgeNoNailApiKey.isEmpty()) {
+            const QString apiKeyLine = QStringLiteral("Environment=") + apiKeyEnv + QStringLiteral("=") + forgeNoNailApiKey;
+            line(QStringLiteral("install -d -m 0700 /etc/systemd/system/multi-forge-nonail.service.d"), script);
+            line(QStringLiteral("cat > /etc/systemd/system/multi-forge-nonail.service.d/credentials.conf <<'EOF'"), script);
+            line(QStringLiteral("[Service]"), script);
+            line(apiKeyLine, script);
+            line(QStringLiteral("EOF"), script);
+            line(QStringLiteral("chmod 0600 /etc/systemd/system/multi-forge-nail.service.d/credentials.conf"), script);
+        }
+    }
+
+    if (forgeMinaEnabled) {
+        line(QStringLiteral("# Configure MultiForge Mina provisioning"), script);
+        line(QStringLiteral("install -d -m 0755 /opt/multi-forge"), script);
+        line(QStringLiteral("cat > /opt/multi-forge/provision-mina.sh <<'EOF'"), script);
+        line(QStringLiteral("#!/bin/sh"), script);
+        line(QStringLiteral("set -eu"), script);
+        line(QStringLiteral("if [ ! -d /opt/mina/.git ]; then"), script);
+        line(QStringLiteral("  rm -rf /opt/mina"), script);
+        line(QStringLiteral("  git clone https://github.com/alguemaiYT/Mina-a-Assistente-Virtual.git /opt/mina"), script);
+        line(QStringLiteral("fi"), script);
+        line(QStringLiteral("python3 -m venv /opt/mina/.venv"), script);
+        line(QStringLiteral("/opt/mina/.venv/bin/pip install --upgrade pip"), script);
+        line(QStringLiteral("/opt/mina/.venv/bin/pip install -r /opt/mina/requirements.txt"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("chmod 0755 /opt/multi-forge/provision-mina.sh"), script);
+        line(QStringLiteral("cat > /etc/systemd/system/multi-forge-mina-setup.service <<'EOF'"), script);
+        line(QStringLiteral("[Unit]"), script);
+        line(QStringLiteral("Description=Provision MultiForge Mina Voice Assistant"), script);
+        line(QStringLiteral("Wants=network-online.target"), script);
+        line(QStringLiteral("After=network-online.target"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Service]"), script);
+        line(QStringLiteral("Type=oneshot"), script);
+        line(QStringLiteral("ExecStart=/opt/multi-forge/provision-mina.sh"), script);
+        line(QStringLiteral(""), script);
+        line(QStringLiteral("[Install]"), script);
+        line(QStringLiteral("WantedBy=multi-user.target"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("systemctl enable multi-forge-mina-setup.service"), script);
+
+        // The desktop entry only starts Mina after its provisioner has succeeded.
+        line(QStringLiteral("TARGET_USER=\"") + effectiveUser + QStringLiteral("\""), script);
+        line(QStringLiteral("TARGET_HOME=$(getent passwd \"$TARGET_USER\" | cut -d: -f6)"), script);
+        line(QStringLiteral("if [ -z \"$TARGET_HOME\" ] || [ ! -d \"$TARGET_HOME\" ]; then TARGET_HOME=\"/home/") + effectiveUser + QStringLiteral("\"; fi"), script);
+        line(QStringLiteral("install -d -o \"$TARGET_USER\" -g \"$TARGET_USER\" -m 0755 \"$TARGET_HOME/.config/autostart\""), script);
+        line(QStringLiteral("cat > \"$TARGET_HOME/.config/autostart/mina.desktop\" <<'EOF'"), script);
+        line(QStringLiteral("[Desktop Entry]"), script);
+        line(QStringLiteral("Type=Application"), script);
+        line(QStringLiteral("Name=Mina Virtual Assistant"), script);
+        line(QStringLiteral("Exec=/bin/sh -c 'systemctl is-active --quiet multi-forge-mina-setup.service && exec /opt/mina/.venv/bin/python /opt/mina/main_gui.py'"), script);
+        line(QStringLiteral("Terminal=false"), script);
+        line(QStringLiteral("Categories=Utility;"), script);
+        line(QStringLiteral("EOF"), script);
+        line(QStringLiteral("chown \"$TARGET_USER:$TARGET_USER\" \"$TARGET_HOME/.config/autostart/mina.desktop\""), script);
+    }
+
     // Final cleanup to mimic legacy behavior
     line(QStringLiteral("rm -f /boot/firstrun.sh"), script);
     line(QStringLiteral("sed -i 's| systemd.run.*||g' /boot/cmdline.txt"), script);

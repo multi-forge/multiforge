@@ -486,6 +486,7 @@ if(NOT BUILD_CLI_ONLY)
         wizard/RemoteAccessStep.qml
         wizard/SecureBootCustomizationStep.qml
         wizard/PiConnectCustomizationStep.qml
+        wizard/MultiForgeCustomizationStep.qml
         wizard/WritingStep.qml
         wizard/DoneStep.qml
         wizard/components/WizardSectionContainer.qml

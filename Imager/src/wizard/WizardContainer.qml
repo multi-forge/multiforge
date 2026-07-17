@@ -30,7 +30,7 @@ Item {
     // NOT a binding, so it won't auto-change when hasNetworkConnectivity changes.
     // The onOsListUnavailableChanged handler manages the offline→online transition.
     property int currentStep: 0
-    readonly property int totalSteps: 13
+    readonly property int totalSteps: 14
     
     // Track which steps have been made permissible/unlocked for navigation
     // Each bit represents a step: bit 0 = Device, bit 1 = OS, etc.
@@ -69,6 +69,13 @@ Item {
     property bool piConnectEnabled: false
     // Whether selected OS supports Raspberry Raspberry Pi Connect customization
     property bool piConnectAvailable: false
+    // MultiForge Modules availability and enabling
+    property bool forgeScrapingAvailable: false
+    property bool forgeScrapingEnabled: false
+    property bool forgeNoNailAvailable: false
+    property bool forgeNoNailEnabled: false
+    property bool forgeMinaAvailable: false
+    property bool forgeMinaEnabled: false
     // Whether the current write target is a fastboot storage device.
     // Set by StorageSelectionStep on selection; consumed by the
     // Pi Connect customisation step to choose between device-identity
@@ -139,8 +146,9 @@ Item {
     readonly property int stepSecureBootCustomization: 8
     readonly property int stepPiConnectCustomization: 9
     readonly property int stepIfAndFeatures: 10
-    readonly property int stepWriting: 11
-    readonly property int stepDone: 12
+    readonly property int stepMultiForgeCustomization: 11
+    readonly property int stepWriting: 12
+    readonly property int stepDone: 13
     
     signal wizardCompleted()
     signal updatePopupRequested(url updateUrl, string version)
@@ -272,13 +280,15 @@ Item {
     }
 
     function getLastCustomizationStep() {
-        return (ccRpiAvailable && ifAndFeaturesAvailable)
-            ? stepIfAndFeatures
-            : piConnectAvailable
-                ? stepPiConnectCustomization
-                : secureBootAvailable
-                    ? stepSecureBootCustomization
-                    : stepRemoteAccess
+        return (forgeScrapingAvailable || forgeNoNailAvailable || forgeMinaAvailable)
+            ? stepMultiForgeCustomization
+            : (ccRpiAvailable && ifAndFeaturesAvailable)
+                ? stepIfAndFeatures
+                : piConnectAvailable
+                    ? stepPiConnectCustomization
+                    : secureBootAvailable
+                        ? stepSecureBootCustomization
+                        : stepRemoteAccess
     }
 
     function getCustomizationSubstepLabels() {
@@ -286,7 +296,7 @@ Item {
         if (!customizationSupported) {
             return []
         }
-        
+
         var labels = [qsTr("Hostname"), qsTr("Localisation"), qsTr("User"), qsTr("Wi‑Fi"), qsTr("Remote access")]
         if (secureBootAvailable) {
             labels.push(qsTr("Secure Boot"))
@@ -297,6 +307,9 @@ Item {
         if (ccRpiAvailable && ifAndFeaturesAvailable) {
             labels.push(qsTr("Interfaces & Features"))
         }
+        if (forgeScrapingAvailable || forgeNoNailAvailable || forgeMinaAvailable) {
+            labels.push(qsTr("MultiForge Modules"))
+        }
 
         return labels
     }
@@ -305,7 +318,7 @@ Item {
         // Map the display index to the actual step based on what's available
         var labels = getCustomizationSubstepLabels()
         if (subIndex >= labels.length) return false
-        
+
         var stepLabel = labels[subIndex]
         if (stepLabel === qsTr("Hostname")) return hostnameConfigured
         if (stepLabel === qsTr("Localisation")) return localeConfigured
@@ -315,7 +328,8 @@ Item {
         if (stepLabel === qsTr("Secure Boot")) return secureBootEnabled
         if (stepLabel === qsTr("Raspberry Pi Connect")) return piConnectEnabled
         if (stepLabel === qsTr("Interfaces & Features")) return (ifI2cEnabled || ifSpiEnabled || if1WireEnabled || (ifSerial !== "" && ifSerial !== "Disabled") || featUsbGadgetEnabled)
-        
+        if (stepLabel === qsTr("MultiForge Modules")) return (forgeScrapingEnabled || forgeNoNailEnabled || forgeMinaEnabled)
+
         return false
     }
 
@@ -339,12 +353,12 @@ Item {
     function invalidateDeviceDependentSteps() {
         // When device changes, invalidate all steps after device selection
         invalidateStepsFrom(stepOSSelection)
-        
+
         // Clear device-dependent state
         selectedOsName = ""
         selectedStorageName = ""
         customizationSupported = true  // Reset to default
-        
+
         // Clear all customization flags
         hostnameConfigured = false
         localeConfigured = false
@@ -361,15 +375,23 @@ Item {
         if1WireEnabled = false
         ifSerial = ""
         featUsbGadgetEnabled = false
+
+        // Clear MultiForge options
+        forgeScrapingAvailable = false
+        forgeScrapingEnabled = false
+        forgeNoNailAvailable = false
+        forgeNoNailEnabled = false
+        forgeMinaAvailable = false
+        forgeMinaEnabled = false
     }
-    
+
     function invalidateOSDependentSteps() {
         // When OS changes, invalidate storage and later steps
         invalidateStepsFrom(stepStorageSelection)
-        
+
         // Clear OS-dependent state
         selectedStorageName = ""
-        
+
         // Clear customization flags since they depend on the specific OS
         // The OS selection logic will set customizationSupported appropriately
         // and clear these again if needed, but we clear them proactively here
@@ -379,7 +401,7 @@ Item {
         wifiConfigured = false
         sshEnabled = false
         piConnectEnabled = false
-        
+
         // Reset OS capability flags - these will be set correctly by OS selection
         piConnectAvailable = false
         secureBootAvailable = false
@@ -390,6 +412,14 @@ Item {
         if1WireEnabled = false
         ifSerial = ""
         featUsbGadgetEnabled = false
+
+        // Reset MultiForge capability flags
+        forgeScrapingAvailable = false
+        forgeScrapingEnabled = false
+        forgeNoNailAvailable = false
+        forgeNoNailEnabled = false
+        forgeMinaAvailable = false
+        forgeMinaEnabled = false
     }
 
     // Map sidebar index back to the first wizard step in that group
@@ -589,9 +619,11 @@ Item {
                                         else if (root.currentStep === root.stepUserCustomization) currentStepLabel = qsTr("User")
                                         else if (root.currentStep === root.stepWifiCustomization) currentStepLabel = qsTr("Wi‑Fi")
                                         else if (root.currentStep === root.stepRemoteAccess) currentStepLabel = qsTr("Remote access")
+                                        else if (root.currentStep === root.stepSecureBootCustomization) currentStepLabel = qsTr("Secure Boot")
                                         else if (root.currentStep === root.stepPiConnectCustomization) currentStepLabel = qsTr("Raspberry Pi Connect")
                                         else if (root.currentStep === root.stepIfAndFeatures) currentStepLabel = qsTr("Interfaces & Features")
-                                        
+                                        else if (root.currentStep === root.stepMultiForgeCustomization) currentStepLabel = qsTr("MultiForge Modules")
+
                                         return labels[subItem.index] === currentStepLabel
                                     }
                                     property bool isConfigured: root.isCustomizationSubstepConfigured(subItem.index)
@@ -599,8 +631,9 @@ Item {
                                         // Allow navigation to any substep if we've reached customization
                                         root.currentStep >= root.firstCustomizationStep ||
                                         // Or if we've been to customization before (any substep configured)
-                                        root.hostnameConfigured || root.localeConfigured || root.userConfigured || 
+                                        root.hostnameConfigured || root.localeConfigured || root.userConfigured ||
                                         root.wifiConfigured || root.sshEnabled || root.piConnectEnabled ||
+                                        root.forgeScrapingEnabled || root.forgeNoNailEnabled || root.forgeMinaEnabled ||
                                         // Or if any customization step has been made permissible
                                         root.isStepPermissible(root.stepHostnameCustomization) ||
                                         root.isStepPermissible(root.stepLocaleCustomization) ||
@@ -608,7 +641,8 @@ Item {
                                         root.isStepPermissible(root.stepWifiCustomization) ||
                                         root.isStepPermissible(root.stepRemoteAccess) ||
                                         root.isStepPermissible(root.stepPiConnectCustomization) ||
-                                        root.isStepPermissible(root.stepIfAndFeatures)
+                                        root.isStepPermissible(root.stepIfAndFeatures) ||
+                                        root.isStepPermissible(root.stepMultiForgeCustomization)
                                     )
 
                                     MouseArea {
@@ -629,8 +663,10 @@ Item {
                                             else if (stepLabel === qsTr("User")) target = root.stepUserCustomization
                                             else if (stepLabel === qsTr("Wi‑Fi")) target = root.stepWifiCustomization
                                             else if (stepLabel === qsTr("Remote access")) target = root.stepRemoteAccess
+                                            else if (stepLabel === qsTr("Secure Boot")) target = root.stepSecureBootCustomization
                                             else if (stepLabel === qsTr("Raspberry Pi Connect")) target = root.stepPiConnectCustomization
                                             else if (stepLabel === qsTr("Interfaces & Features")) target = root.stepIfAndFeatures
+                                            else if (stepLabel === qsTr("MultiForge Modules")) target = root.stepMultiForgeCustomization
                                             
                                             // Allow navigation to permissible steps or backward navigation within customization
                                             if (root.currentStep !== target && (root.isStepPermissible(target) || target < root.currentStep)) {
@@ -852,6 +888,10 @@ Item {
             if ((!ccRpiAvailable || !ifAndFeaturesAvailable) && nextIndex == stepIfAndFeatures) {
                 nextIndex++
             }
+            // Skip MultiForge customisation step when OS doesn't support any MultiForge module
+            if (!(forgeScrapingAvailable || forgeNoNailAvailable || forgeMinaAvailable) && nextIndex === stepMultiForgeCustomization) {
+                nextIndex++
+            }
             // Before entering the writing step, apply customization (when supported)
             if (nextIndex === stepWriting) {
                 if (customizationSupported && ImageWriterSingleton && !replayPreviousWrite) {
@@ -907,6 +947,9 @@ Item {
                 if (prevIndex == stepIfAndFeatures && (!ccRpiAvailable || !ifAndFeaturesAvailable)) {
                     prevIndex--
                 }
+                if (prevIndex === stepMultiForgeCustomization && !(forgeScrapingAvailable || forgeNoNailAvailable || forgeMinaAvailable)) {
+                    prevIndex--
+                }
                 if (prevIndex === stepPiConnectCustomization && !piConnectAvailable) {
                     prevIndex--
                 }
@@ -960,6 +1003,7 @@ Item {
             case stepSecureBootCustomization: return secureBootCustomizationStep
             case stepPiConnectCustomization: return piConnectCustomizationStep
             case stepIfAndFeatures: return ifAndFeaturesStep
+            case stepMultiForgeCustomization: return multiForgeCustomizationStep
             case stepWriting: return writingStep
             case stepDone: return doneStep
             default: return null
@@ -1132,6 +1176,16 @@ Item {
         }
     }
     
+    Component {
+        id: multiForgeCustomizationStep
+        MultiForgeCustomizationStep {
+            wizardContainer: root
+            appOptionsButton: optionsButton
+            onNextClicked: root.nextStep()
+            onBackClicked: root.previousStep()
+        }
+    }
+
     Component {
         id: writingStep
         WritingStep {

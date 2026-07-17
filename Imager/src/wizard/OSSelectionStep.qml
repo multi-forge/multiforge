@@ -709,6 +709,9 @@ WizardStepBase {
                 root.wizardContainer.passwordlessSudoAvailable = false
                 root.wizardContainer.ccRpiAvailable = false
                 root.wizardContainer.ifAndFeaturesAvailable = false
+                root.wizardContainer.forgeScrapingAvailable = false
+                root.wizardContainer.forgeNoNailAvailable = false
+                root.wizardContainer.forgeMinaAvailable = false
                 root.nextButtonEnabled = true
                 if (fromMouse) {
                     Qt.callLater(function() { _highlightMatchingEntryInCurrentView(model) })
@@ -735,6 +738,9 @@ WizardStepBase {
                 root.wizardContainer.secureBootAvailable = ImageWriterSingleton.checkSWCapability("secure_boot") || ImageWriterSingleton.isSecureBootForcedByCliFlag() || ImageWriterSingleton.getDebugForceSecureBoot()
                 root.wizardContainer.passwordlessSudoAvailable = ImageWriterSingleton.checkSWCapability("passwordless_sudo")
                 root.wizardContainer.ccRpiAvailable = ImageWriterSingleton.imageSupportsCcRpi()
+                root.wizardContainer.forgeScrapingAvailable = ImageWriterSingleton.checkSWCapability("forge_scraping")
+                root.wizardContainer.forgeNoNailAvailable = ImageWriterSingleton.checkSWCapability("forge_nonail")
+                root.wizardContainer.forgeMinaAvailable = ImageWriterSingleton.checkSWCapability("forge_mina")
                 
                 // Check if any interface/feature capabilities are available (requires both HW and SW support).
                 // Gated on the OS being able to apply the toggles at all: cloud-init via cc_raspberry_pi,
@@ -754,6 +760,23 @@ WizardStepBase {
                 if (!root.wizardContainer.piConnectAvailable) {
                     delete root.wizardContainer.customizationSettings.piConnectEnabled
                     root.wizardContainer.piConnectEnabled = false
+                }
+                if (!root.wizardContainer.forgeScrapingAvailable) {
+                    delete root.wizardContainer.customizationSettings.forgeScrapingEnabled
+                    delete root.wizardContainer.customizationSettings.forgeScrapingPort
+                    delete root.wizardContainer.customizationSettings.forgeScrapingDataSourceUrl
+                    root.wizardContainer.forgeScrapingEnabled = false
+                }
+                if (!root.wizardContainer.forgeNoNailAvailable) {
+                    delete root.wizardContainer.customizationSettings.forgeNoNailEnabled
+                    delete root.wizardContainer.customizationSettings.forgeNoNailProvider
+                    delete root.wizardContainer.customizationSettings.forgeNoNailModel
+                    delete root.wizardContainer.customizationSettings.forgeNoNailApiKey
+                    root.wizardContainer.forgeNoNailEnabled = false
+                }
+                if (!root.wizardContainer.forgeMinaAvailable) {
+                    delete root.wizardContainer.customizationSettings.forgeMinaEnabled
+                    root.wizardContainer.forgeMinaEnabled = false
                 }
                 // Drop any auth key minted for the previously-selected
                 // OS — leaving a stale org credential bound to a fresh
