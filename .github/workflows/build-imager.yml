@@ -1,0 +1,44 @@
+name: Build ForgeImager
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & Test ForgeImager
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install Qt & Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-declarative-dev cmake ninja-build libarchive-dev
+
+    - name: Configure CMake
+      run: |
+        cmake -B build -S ForgeImager -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build Application
+      run: |
+        cmake --build build --config Release
+
+    - name: Run Tests
+      run: |
+        ctest --test-dir build --output-on-failure
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: forge-imager-build
+        path: |
+          build/rpi-imager
+          build/rpi-imager-cli

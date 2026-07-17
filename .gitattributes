@@ -1,0 +1,20 @@
+# Auto-detect text files and perform LF normalization
+* text=auto
+
+# Declare files to always have LF line endings on checkout
+*.cpp text eol=lf
+*.h text eol=lf
+*.qml text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+
+# Denote binary files (do not normalize)
+*.png binary
+*.gif binary
+*.jpg binary
+*.ico binary
