@@ -1,0 +1,49 @@
+images:
+  - id: educabox-23.8.1
+    distribution: Educabox
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=1GMTTM88uvnXYpHC2hlzQGaLKLA0Rq2jx
+    recommended: true
+  - id: armbian-23.8.1
+    distribution: Armbian
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=16XfAspTprQX2QKNFBrFKEcHLAQbMXLjE
+    recommended: false
+  - id: armbian-23.8.1-torrent
+    distribution: Armbian
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=10nbA5OmPXiTydt9d8HHTb1Cm_RJv1YWm
+    recommended: false
+  - id: armbian-23.11.1
+    distribution: Armbian
+    version: 23.11.1
+    kernel: 6.1.63
+    url: https://drive.google.com/uc?export=download&id=1cZzKVb4iwia0aPONmyD_bFzK2FwtRN-r
+    recommended: false
+  - id: armbian-23.11.1-torrent
+    distribution: Armbian
+    version: 23.11.1
+    kernel: 6.1.63
+    url: https://drive.google.com/uc?export=download&id=1c1b4kldMVfyZwS0YkZXywP_6S2TaOpvO
+    recommended: false
+  - id: forgeos-server
+    distribution: ForgeOS Server
+    version: Bullseye ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-server-arm64.img.xz
+    recommended: false
+  - id: forgeos-iot
+    distribution: ForgeOS IoT Gateway
+    version: Alpine ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-iot-arm64.img.xz
+    recommended: false
+  - id: forgeos-media
+    distribution: ForgeOS Media Station
+    version: Kodi ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-media-arm64.img.xz
+    recommended: false

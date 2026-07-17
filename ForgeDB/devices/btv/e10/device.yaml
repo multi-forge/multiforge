@@ -1,0 +1,311 @@
+schema: forgedb/v1
+id: btve10
+slug: btv-e10
+name: BTV E10
+aliases:
+  - BTVE10
+  - BTV E10 Express
+manufacturer: BTV
+family: Cortex-A53
+series: null
+category: TV Box
+status: Suportado
+description: "BTV E10 TV Box featuring Rockchip RK3566 and AP6256 Wi-Fi"
+tags:
+  - btv-e10
+  - rk3566
+hardware:
+  soc:
+    vendor: Amlogic
+    model: S905X2
+    architecture: Cortex-A53
+    confidence: high
+  board:
+    model: BTVE E10-LPDDR4 V.10 201-03-08
+    revision: null
+  memory:
+    ram: 2GB
+    storage: 8GB
+  gpu:
+    vendor: null
+    model: Mali-G31 MC1
+  wireless:
+    wifi:
+      chipset: RTL8189FTV
+      firmware: null
+    bluetooth:
+      chipset: null
+      firmware: null
+  ethernet: true
+  usb: true
+  hdmi: true
+  audio: true
+  power: null
+boot:
+  supported_modes:
+    - Pendrive
+    - Script
+    - eMMC
+  default_mode: null
+  recovery_method: null
+  reset_button: true
+flash:
+  supported: true
+  preferred_tool: \root\install-aml.sh
+  alternative_tools: []
+  requires_loader: null
+  loader_file: null
+  erase_before_flash: null
+  aml_autoscript: true
+  notes: "Diferente de outras TVs Boxes processadores Amlogic não tem compatibilidade com a instalação padrão do Armbian armbian-install, por isso não tente utilizar o comando padrão do Armbian para instalação em TVs Boxes com processadores Amlogic"
+android:
+  versions: []
+  firmware: null
+  root_supported: null
+  adb_supported: null
+linux:
+  kernel: 6.1.50
+  dtb: meson-g12a-sei510.dtb
+  firmware_packages: []
+  overlays: []
+  supported_distributions:
+    - Educabox
+    - Armbian
+    - ForgeOS
+compatibility:
+  forgeos:
+    status: supported
+    notes: "ForgeOS Server (Bullseye ARM64), ForgeOS IoT Gateway (Alpine ARM64), ForgeOS Media Station (Kodi ARM64)"
+  armbian:
+    status: supported
+  educabox:
+    status: supported
+  debian:
+    status: null
+  ubuntu:
+    status: null
+  libreelec:
+    status: null
+  coreelec:
+    status: null
+features:
+  wifi: true
+  bluetooth: true
+  ethernet: true
+  gpio: null
+  uart: null
+  spi: null
+  i2c: null
+  pwm: null
+  hdmi_cec: null
+  hardware_decode: null
+  hardware_encode: null
+  vulkan: null
+  opengl: null
+  usb3: true
+installation:
+  difficulty: null
+  estimated_time: null
+  requires_opening: false
+  requires_uart: false
+  requires_maskrom: false
+  tutorials:
+    - "Como Instalar nossa Imagem Educabox?: https://github.com/educabox/educabox/blob/main/instalacao/instalacao-educabox-live.md"
+    - "Como gravar uma Imagem no balenaEtcher?: https://github.com/educabox/educabox/blob/main/instalacao/gravacao-balenaecther.md"
+  recovery: null
+downloads:
+  bootloader: null
+  loader: null
+  firmware: null
+  dtb: https://drive.google.com/uc?export=download&id=1aaxBDKcvh3FGpS1LabSoefU0TTAFl4Mt
+images:
+  - id: educabox-23.8.1
+    distribution: Educabox
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=1GMTTM88uvnXYpHC2hlzQGaLKLA0Rq2jx
+    recommended: true
+  - id: armbian-23.8.1
+    distribution: Armbian
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=16XfAspTprQX2QKNFBrFKEcHLAQbMXLjE
+    recommended: false
+  - id: armbian-23.8.1-torrent
+    distribution: Armbian
+    version: 23.8.1
+    kernel: 6.1.50
+    url: https://drive.google.com/uc?export=download&id=10nbA5OmPXiTydt9d8HHTb1Cm_RJv1YWm
+    recommended: false
+  - id: armbian-23.11.1
+    distribution: Armbian
+    version: 23.11.1
+    kernel: 6.1.63
+    url: https://drive.google.com/uc?export=download&id=1cZzKVb4iwia0aPONmyD_bFzK2FwtRN-r
+    recommended: false
+  - id: armbian-23.11.1-torrent
+    distribution: Armbian
+    version: 23.11.1
+    kernel: 6.1.63
+    url: https://drive.google.com/uc?export=download&id=1c1b4kldMVfyZwS0YkZXywP_6S2TaOpvO
+    recommended: false
+  - id: forgeos-server
+    distribution: ForgeOS Server
+    version: Bullseye ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-server-arm64.img.xz
+    recommended: false
+  - id: forgeos-iot
+    distribution: ForgeOS IoT Gateway
+    version: Alpine ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-iot-arm64.img.xz
+    recommended: false
+  - id: forgeos-media
+    distribution: ForgeOS Media Station
+    version: Kodi ARM64
+    kernel: null
+    url: https://downloads.sourceforge.net/project/multi-forge/forgeos-media-arm64.img.xz
+    recommended: false
+known_issues:
+  - title: Incompatibilidade com armbian-install
+    description: "Processadores Amlogic não têm compatibilidade com a instalação padrão do Armbian (armbian-install), por isso não deve ser utilizado o comando padrão."
+    workaround: "Digite no terminal \\root\\install-aml.sh para instalar do Pendrive para o eMMC."
+    severity: high
+benchmarks:
+  cpu: null
+  gpu: null
+  storage: null
+  network: null
+documentation:
+  identify: null
+  install: https://github.com/educabox/educabox/blob/main/instalacao/instalacao-educabox-live.md
+  recovery: null
+  disassembly: null
+  photos:
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/BTVE10%20HARDWARE.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/GERAL.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/SOC.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/SISTEMA.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/TELA.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/MEMORIA.png?raw=true
+    - https://github.com/educabox/educabox/blob/main/imagens/03%20-%20BTVE10/Screenshots/NEOFETCH.png?raw=true
+  videos: []
+sources:
+  - repository: educabox/educabox
+    repository_url: https://github.com/educabox/educabox
+    branch: main
+    commit: null
+    file: boxes/btve10.md
+    section: Hardware
+    url: https://github.com/educabox/educabox/blob/main/boxes/btve10.md
+    confidence: high
+  - repository: educabox/educabox
+    repository_url: https://github.com/educabox/educabox
+    branch: main
+    commit: null
+    file: instalacao/instalacao-educabox-live.md
+    section: "Download Educabox [Armbian]"
+    url: https://github.com/educabox/educabox/blob/main/instalacao/instalacao-educabox-live.md
+    confidence: high
+  - repository: multi-forge/multi-forge
+    repository_url: https://github.com/multi-forge/multi-forge
+    branch: main
+    commit: null
+    file: README.md
+    section: Banco de Compatibilidade
+    url: https://github.com/multi-forge/multi-forge/blob/main/README.md
+    confidence: high
+  - repository: multi-forge/multi-forge
+    repository_url: https://github.com/multi-forge/multi-forge
+    branch: main
+    commit: null
+    file: Imager/src/blank-catalog.json
+    section: imager.devices
+    url: https://github.com/multi-forge/multi-forge/blob/main/Imager/src/blank-catalog.json
+    confidence: high
+verification:
+  status: unverified
+  confidence: high
+  last_verified: null
+  contributors: []
+  tested_by: []
+  conflicts:
+    soc:
+      - source: "README.md (multi-forge/multi-forge)"
+        value: Rockchip RK3566
+      - source: "blank-catalog.json (multi-forge/multi-forge)"
+        value: Rockchip RK3566
+      - source: "boxes/btve10.md (educabox/educabox)"
+        value: Amlogic S905X2
+      - source: "instalacao-educabox-live.md (educabox/educabox)"
+        value: Amlogic S905X2
+    wifi:
+      - source: "README.md (multi-forge/multi-forge)"
+        value: AP6256
+      - source: "blank-catalog.json (multi-forge/multi-forge)"
+        value: AP6256
+      - source: "boxes/btve10.md (educabox/educabox)"
+        value: RTL8189FTV
+      - source: "instalacao-educabox-live.md (educabox/educabox)"
+        value: RTL8189FTV
+provenance:
+  extracted_from: boxes/btve10.md
+  extracted_at: "2026-07-17T16:28:00-03:00"
+  extractor: Antigravity
+  extractor_version: 1.0.0
+  repository: educabox/educabox
+  repository_url: https://github.com/educabox/educabox
+  commit: null
+  branch: main
+  file: boxes/btve10.md
+  line_start: 1
+  line_end: 223
+raw:
+  snippets:
+    - "Placa Mãe | BTVE E10-LPDDR4 V.10 201-03-08"
+    - "Placa DTB | g12a_u212_2g"
+    - "CPU | Amlogic S905X2"
+    - "GPU | Mali-G31 MC1"
+    - "Wifi | RTL8189FTV"
+    - "Diferente de outras TVs Boxes processadores Amlogic não tem compatibilidade com a instalação padrão do Armbian armbian-install, por isso não tente utilizar o comando padrão do Armbian para instalação em TVs Boxes com processadores Amlogic"
+  tables:
+    - |
+      |Sumário | Detalhes|
+      ---------|:--:
+      Codename | BTVE10
+      Fabricante | BTV
+      Modelo | E10
+      Placa Mãe | BTVE E10-LPDDR4 V.10 201-03-08
+      Placa DTB | g12a_u212_2g
+      CPU | Amlogic S905X2
+      Família | Cortex-A53
+      Velocidade | 100 - 1800 MHz
+      GPU | Mali-G31 MC1
+      Wifi | RTL8189FTV
+      Memória | 2GB
+      Armazenamento | 8GB
+      Resolução | 1080X1920
+    - |
+      | S.O | Kernel | Versão | Interface | Download |
+      |---------|:------:|:------:|:---------:|:--------:|
+      | Educabox | 6.1.50 | 23.8.1| XFCE | [.img](https://drive.google.com/uc?export=download&id=1GMTTM88uvnXYpHC2hlzQGaLKLA0Rq2jx)|
+      | Armbian | 6.1.50 | 23.8.1| XFCE | [.img](https://drive.google.com/uc?export=download&id=16XfAspTprQX2QKNFBrFKEcHLAQbMXLjE)|
+      | Armbian | 6.1.50 | 23.8.1| XFCE | [Torrent](https://drive.google.com/uc?export=download&id=10nbA5OmPXiTydt9d8HHTb1Cm_RJv1YWm)|
+    - |
+      | S.O | Kernel | Versão | Interface | Download |
+      |---------|:------:|:------:|:---------:|:--------:|
+      | Armbian | 6.1.63 | 23.11.1| XFCE |[.img](https://drive.google.com/uc?export=download&id=1cZzKVb4iwia0aPONmyD_bFzK2FwtRN-r)|
+      | Armbian | 6.1.63 | 23.11.1| XFCE |[Torrent](https://drive.google.com/uc?export=download&id=1c1b4kldMVfyZwS0YkZXywP_6S2TaOpvO)|
+  markdown:
+    - "# 📦 TV BOX BTV E10"
+    - "# ⚙️ **Hardware**"
+    - "# Sistema Operacional"
+    - "# 📌 Serviços Ativos/Inativos"
+    - "# 📄 Geral"
+    - "# 🔧 SOC"
+    - "# 📲 Sistema"
+    - "# 🖥️ Tela"
+    - "# 💾 Memória"
+    - "# 📝 Neofetch"
+    - "# ✅ Guia de Instalação Imagem Oficial Armbian"
