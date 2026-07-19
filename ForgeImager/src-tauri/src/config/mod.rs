@@ -14,30 +14,40 @@ pub mod app {
 
 /// API endpoints and URLs
 pub mod urls {
-    const API_BASE_DEFAULT: &str = "https://api.Forge.com/api/v1";
+    /// GitHub releases API base for multi-forge/multi-forge.
+    /// Overridable at runtime via `FORGE_API_BASE` for custom setups.
+    const API_BASE_DEFAULT: &str = "https://api.github.com/repos/multi-forge/multi-forge";
 
-    /// Forge API base. Overridable at runtime via `FORGE_API_BASE` so a
-    /// dev/test build can be pointed at a local API without a rebuild.
+    /// MultiForge GitHub releases API base.
     pub fn api_base() -> String {
         std::env::var("FORGE_API_BASE").unwrap_or_else(|_| API_BASE_DEFAULT.to_string())
     }
 
-    /// Health check endpoint (no auth required)
+    /// Connectivity probe: GitHub API root — always reachable, no auth, no server needed.
     pub fn health() -> String {
-        format!("{}/health", api_base())
+        "https://api.github.com".to_string()
     }
 
-    /// Base URL for board images (api.Forge.com/api/v1/images/boards/{size}/{slug}.png)
-    pub const BOARD_IMAGES_BASE: &str = "https://api.Forge.com/api/v1/images/boards/";
+    /// GitHub releases page for MultiForge.
+    pub fn releases() -> String {
+        format!("{}/releases", api_base())
+    }
 
-    /// Default image size for board photos (480px width, natural aspect ratio)
+    /// GitHub releases API — latest release.
+    pub fn latest_release() -> String {
+        format!("{}/releases/latest", api_base())
+    }
+
+    /// Base URL for board images (placeholder — swap for your CDN/GitHub raw URL).
+    pub const BOARD_IMAGES_BASE: &str = "https://raw.githubusercontent.com/multi-forge/multi-forge/main/images/boards/";
+
+    /// Default image size label (kept for compatibility).
     pub const BOARD_IMAGE_SIZE: &str = "480";
 
-    /// Base URL for vendor logos (api.Forge.com/api/v1/images/vendors/{size}/{slug}.png)
-    pub const VENDOR_IMAGES_BASE: &str = "https://api.Forge.com/api/v1/images/vendors/480/";
+    /// Base URL for vendor logos (placeholder — swap for your CDN/GitHub raw URL).
+    pub const VENDOR_IMAGES_BASE: &str = "https://raw.githubusercontent.com/multi-forge/multi-forge/main/images/vendors/480/";
 
-    /// Base URL for QDL firehose loaders / provisioning XML, served by the API blob
-    /// proxy ({base}{family}/{path}). Follows `api_base` so it routes locally in dev.
+    /// QDL blob base (not used without a server; kept to avoid compile errors).
     pub fn qdl_blob_base() -> String {
         format!("{}/qdl/blob/", api_base())
     }

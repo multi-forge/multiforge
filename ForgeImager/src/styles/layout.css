@@ -83,9 +83,12 @@
 }
 
 .logo-main {
-  height: 42px;
+  height: 120px;
+  margin-top: -38px;
+  margin-bottom: -38px;
   width: auto;
   display: block;
+  object-fit: contain;
   filter: var(--logo-filter, none);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }

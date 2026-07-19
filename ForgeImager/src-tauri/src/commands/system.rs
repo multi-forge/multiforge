@@ -195,7 +195,7 @@ fn open_url_windows(url: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// Check reachability of the Forge API health endpoint (5s timeout)
+/// Check reachability by probing the GitHub API root (free, no server needed, returns 200 when online)
 #[tauri::command]
 pub async fn check_connectivity() -> bool {
     match CONNECTIVITY_CLIENT
@@ -219,6 +219,7 @@ pub async fn check_connectivity() -> bool {
         }
     }
 }
+
 
 // Forge System Detection
 
