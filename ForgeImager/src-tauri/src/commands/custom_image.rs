@@ -7,7 +7,7 @@ use tauri::State;
 use crate::decompress::{decompress_local_file, needs_decompression};
 use crate::images::{fetch_boards, map_board, BoardInfo};
 use crate::qdl::extract::open_tar_reader;
-use crate::utils::{custom_decompress_dir, normalize_slug, parse_FORGE_filename};
+use crate::utils::{custom_decompress_dir, normalize_slug, parse_forge_filename};
 use crate::{log_debug, log_error, log_info};
 
 use super::state::AppState;
@@ -286,7 +286,7 @@ async fn match_board_from_filename(
         .and_then(|n| n.to_str())
         .ok_or("Invalid filename")?;
 
-    let parsed = match parse_FORGE_filename(filename_only) {
+    let parsed = match parse_forge_filename(filename_only) {
         Some(info) => info,
         None => {
             log_debug!(

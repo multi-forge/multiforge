@@ -9,7 +9,7 @@ use std::time::SystemTime;
 use filetime::FileTime;
 use once_cell::sync::Lazy;
 
-use crate::utils::{assets_dir, images_dir, parse_FORGE_filename, validate_cache_path};
+use crate::utils::{assets_dir, images_dir, parse_forge_filename, validate_cache_path};
 use crate::{log_debug, log_error, log_info, log_warn};
 
 const MODULE: &str = "cache";
@@ -398,7 +398,7 @@ pub fn list_cached_images() -> Result<Vec<CachedImageInfo>, String> {
             .unwrap_or_default()
             .as_secs();
 
-        let parsed = parse_FORGE_filename(&filename);
+        let parsed = parse_forge_filename(&filename);
         let board_slug = parsed.map(|info| info.board_slug);
         let board_name = board_slug.as_deref().map(slug_to_display_name);
 

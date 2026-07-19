@@ -1,62 +1,62 @@
-# Contributing to Forge Imager
+# Contribuindo para o Forge Imager
 
-Contributions are welcome. A few ways to help:
+Contribuições são muito bem-vindas. Algumas formas de ajudar:
 
-- Report bugs by [opening an issue](https://github.com/multi-forge/multi-forge/issues)
-- Suggest features, and open a discussion first if it's a big one
-- Send pull requests for fixes and improvements
-- Add or improve translations in `src/locales/`
-- Improve the docs so the next person has an easier start
+- Relate bugs [abrindo uma issue](https://github.com/multi-forge/multi-forge/issues)
+- Sugira novos recursos (e abra uma discussão primeiro se for uma mudança grande)
+- Envie pull requests para correções e melhorias
+- Adicione ou melhore traduções em `src/locales/`
+- Melhore a documentação para facilitar o início de outros desenvolvedores
 
-For environment setup, build instructions, and project structure, see [DEVELOPMENT.md](DEVELOPMENT.md).
+Para configuração do ambiente de desenvolvimento, instruções de compilação e estrutura do projeto, consulte o guia [DEVELOPMENT.md](DEVELOPMENT.md).
 
-## Development Workflow
+## Fluxo de Trabalho de Desenvolvimento
 
-1. Fork the repository.
-2. Create a branch (`git checkout -b feature/amazing-feature`).
-3. Make your changes and run the quality checks below.
-4. Commit with a conventional commit message.
-5. Push the branch (`git push origin feature/amazing-feature`).
-6. Open a pull request.
+1. Faça um fork do repositório.
+2. Crie uma branch de recurso (`git checkout -b feature/recurso-incrivel`).
+3. Faça suas alterações e execute as verificações de qualidade abaixo.
+4. Faça o commit utilizando mensagens no padrão convencional (Conventional Commits).
+5. Envie a branch para o seu fork (`git push origin feature/recurso-incrivel`).
+6. Abra um Pull Request.
 
-### Branch naming
+### Nomenclatura de branch
 
-Prefix the branch with the kind of change: `feature/` for new functionality, `fix/` for bug fixes, `docs/` for documentation, `refactor/` for restructuring.
+Adicione um prefixo à branch indicando o tipo de alteração: `feature/` para novas funcionalidades, `fix/` para correção de bugs, `docs/` para documentação, `refactor/` para reestruturação de código.
 
-### Commit messages
+### Mensagens de commit
 
-Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`.
+Utilize a especificação [Conventional Commits](https://www.conventionalcommits.org/): `<tipo>(<escopo>): <assunto>`.
 
-Types are `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `build`, `ci`. Common scopes are `frontend`, `backend`, `flash`, `device`, `i18n`, `build`, `ci`, `docs`. Keep each commit to one logical change, and write the subject in the imperative ("add dark mode", not "added dark mode").
+Os tipos válidos são `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `build`, `ci`. Os escopos comuns são `frontend`, `backend`, `flash`, `device`, `i18n`, `build`, `ci`, `docs`. Mantenha cada commit focado em uma única alteração lógica e escreva o assunto no modo imperativo ("adiciona modo escuro", em vez de "adicionado modo escuro").
 
-## Quality Checks
+## Verificações de Qualidade
 
-CI runs these on every pull request, so run them locally first.
+O CI executa essas validações em cada pull request, portanto, execute-as localmente antes de enviar.
 
-Frontend, after touching anything under `src/`:
+Frontend, após alterar qualquer arquivo dentro de `src/`:
 
 ```bash
-npm run lint        # ESLint
-npx tsc --noEmit    # TypeScript type check
+npm run lint        # Executa ESLint
+npx tsc --noEmit    # Validação de tipos TypeScript
 ```
 
-Backend, after touching anything under `src-tauri/`:
+Backend, após alterar qualquer arquivo dentro de `src-tauri/`:
 
 ```bash
 cd src-tauri
-cargo fmt           # must produce no diff
+cargo fmt           # Não deve produzir nenhuma diferença (diff)
 cargo clippy --all-targets --all-features -- -D warnings
 ```
 
-A PR needs zero lint errors and zero warnings to merge.
+Um PR precisa de zero erros de lint e zero avisos (warnings) para ser integrado.
 
-## Translations
+## Traduções
 
-The app ships 18 languages: `de`, `en`, `es`, `fr`, `hr`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `pt-BR`, `ru`, `sl`, `sv`, `tr`, `uk`, `zh`. Note that `pt` and `pt-BR` are separate locales.
+O aplicativo suporta 18 idiomas: `de`, `en`, `es`, `fr`, `hr`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `pt-BR`, `ru`, `sl`, `sv`, `tr`, `uk`, `zh`. Observe que `pt` (Português de Portugal) e `pt-BR` (Português do Brasil) são tratados como idiomas separados.
 
-When you add or remove a translation key, change all 18 files in `src/locales/` so they keep the same set of keys. PRs that leave keys missing in some files won't pass review.
+Ao adicionar ou remover uma chave de tradução, atualize todos os 18 arquivos em `src/locales/` para que mantenham o mesmo conjunto de chaves. PRs que deixarem chaves ausentes em algum arquivo não passarão na revisão.
 
-## Other ways to contribute
+## Outras formas de contribuir
 
-* [Open a discussion](https://github.com/multi-forge/multi-forge/discussions)
-* [Help community members](https://github.com/multi-forge/multi-forge/discussions)
+* [Abra uma discussão](https://github.com/multi-forge/multi-forge/discussions)
+* [Ajude membros da comunidade](https://github.com/multi-forge/multi-forge/discussions)

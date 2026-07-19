@@ -5,7 +5,7 @@ use std::path::Path;
 
 use super::UFS_MARKERS;
 use crate::qdl::QdlStorage;
-use crate::utils::{normalize_slug, parse_FORGE_filename};
+use crate::utils::{normalize_slug, parse_forge_filename};
 
 pub struct QdlBoard {
     /// Matched case-insensitively as a substring of the board slug.
@@ -42,7 +42,7 @@ pub fn ufs_board_slug_for_filename(filename: &str) -> Option<String> {
         .file_name()
         .and_then(|n| n.to_str())
         .unwrap_or(filename);
-    let parsed = parse_FORGE_filename(basename)?;
+    let parsed = parse_forge_filename(basename)?;
 
     // The UFS suffix lives in the variant field; fall back to the whole name if absent.
     let variant = parsed.desktop.as_deref().unwrap_or(basename).to_lowercase();

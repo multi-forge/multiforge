@@ -1,15 +1,15 @@
-## Code of Conduct
+## Código de Conduta
 
-We strive to create a welcoming and inclusive environment for everyone. To ensure this, please follow these guidelines:
+Nós nos esforçamos para criar um ambiente acolhedor e inclusivo para todos. Para garantir isso, siga as seguintes diretrizes:
 
-- **Be Respectful and Considerate**: Remember that our community is global, and language and cultural differences may exist. Avoid using offensive or inappropriate language. Understand that what may be acceptable in one culture could be considered offensive in another.
+- **Seja Respeitoso e Atencioso**: Lembre-se de que nossa comunidade é global e que podem existir diferenças culturais e de idioma. Evite usar linguagem ofensiva ou inadequada. Compreenda que o que pode ser aceitável em uma cultura pode ser considerado ofensivo em outra.
 
-- **Seek Clarification When Needed**: If you don't understand something, don't hesitate to ask questions. Similarly, if someone asks a question, be patient and provide a clear and helpful response. Avoid being offended by questions or requests for clarification.
+- **Busque Esclarecimentos Quando Necessário**: Se você não entender alguma coisa, não hesite em fazer perguntas. Da mesma forma, se alguém fizer uma pergunta, seja paciente e forneça uma resposta clara e útil. Evite se ofender com perguntas ou pedidos de esclarecimento.
 
-- **Communication Challenges**: Recognize that not everyone finds communication easy. If you have difficulty expressing yourself, that's okay. We ask everyone to be patient and understanding, and to focus on the message rather than the way it is conveyed.
+- **Desafios de Comunicação**: Reconheça que nem todos acham a comunicação fácil. Se você tiver dificuldades para se expressar, tudo bem. Pedimos a todos que sejam pacientes e compreensivos, concentrando-se na mensagem e não na forma como ela é transmitida.
 
-- **Be Patient and Understanding**: Recognize that contributors come from various backgrounds and levels of experience. If someone makes a mistake, offer constructive feedback rather than criticism.
+- **Seja Paciente e Compreensivo**: Reconheça que os colaboradores vêm de diversas origens e níveis de experiência. Se alguém cometer um erro, ofereça feedback construtivo em vez de críticas.
 
-- **Encourage Inclusivity**: Make an effort to include everyone in discussions, especially those who might be new or less experienced. Avoid jargon or acronyms without explanations, as these can be confusing for newcomers.
+- **Incentive a Inclusão**: Esforce-se para incluir todos nas discussões, especialmente aqueles que possam ser novos ou menos experientes. Evite o uso de jargões ou siglas sem explicações, pois isso pode ser confuso para os novatos.
 
-By following these guidelines, we can ensure a positive and productive environment for all contributors. If you encounter any issues or have concerns, please reach out to the project maintainers on [GitHub](https://github.com/multi-forge/multi-forge).
+Ao seguir estas diretrizes, podemos garantir um ambiente positivo e produtivo para todos os colaboradores. Se você encontrar algum problema ou tiver alguma preocupação, entre em contato com os mantenedores do projeto no [GitHub](https://github.com/multi-forge/multi-forge).

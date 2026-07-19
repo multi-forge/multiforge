@@ -231,7 +231,7 @@ pub struct ForgeReleaseInfo {
 
 /// Parse /etc/Forge-release (Linux only); None when absent or unreadable
 #[tauri::command]
-pub fn get_FORGE_release() -> Option<ForgeReleaseInfo> {
+pub fn get_forge_release() -> Option<ForgeReleaseInfo> {
     #[cfg(target_os = "linux")]
     {
         use std::fs;

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Forge Forums
-    url: https://forum.Forge.com/
-    about: For general questions and community support, please visit the Forge Forums
-  - name: Documentation
-    url: https://docs.Forge.com/
-    about: Check the official Forge documentation for guides and FAQs
+  - name: Discussões do Forge
+    url: https://github.com/multi-forge/multi-forge/discussions
+    about: Para perguntas gerais e suporte da comunidade, por favor visite as discussões do Forge
+  - name: Repositório Principal
+    url: https://github.com/multi-forge/multi-forge
+    about: Acesse a página principal do projeto no GitHub

@@ -60,12 +60,12 @@ fn strip_image_extensions(filename: &str) -> &str {
 
 /// Parse an Forge image filename into structured metadata. Three conventions: Standard `FORGE_{version}_{board}_{distro}_{branch}_{kernel}[_{desktop}]`,
 /// Labeled `FORGE_{label}_{version}_{board}_...` (label when parts[1] is non-numeric), Prefixed `Forge-unofficial_{version}_{board}_...`.
-pub fn parse_FORGE_filename(filename: &str) -> Option<ForgeFilenameInfo> {
+pub fn parse_forge_filename(filename: &str) -> Option<ForgeFilenameInfo> {
     let name = strip_image_extensions(filename);
     let parts: Vec<&str> = name.split('_').collect();
 
-    // Must start with "Forge", possibly hyphenated (e.g. "Forge-unofficial").
-    if parts.len() < 4 || !parts[0].to_ascii_lowercase().starts_with("Forge") {
+    // Must start with "forge", possibly hyphenated (e.g. "forge-unofficial").
+    if parts.len() < 4 || !parts[0].to_ascii_lowercase().starts_with("forge") {
         return None;
     }
 
@@ -146,8 +146,8 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_FORGE_filename_standard() {
-        let info = parse_FORGE_filename(
+    fn test_parse_forge_filename_standard() {
+        let info = parse_forge_filename(
             "FORGE_25.02.0_Nanopi-m5_bookworm_current_6.12.8_gnome.img.xz",
         )
         .unwrap();
@@ -160,8 +160,8 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_FORGE_filename_community() {
-        let info = parse_FORGE_filename(
+    fn test_parse_forge_filename_community() {
+        let info = parse_forge_filename(
             "FORGE_community_26.2.0-trunk.493_Youyeetoo-r1-v3_trixie_edge_6.19.3_minimal.img",
         )
         .unwrap();
@@ -174,8 +174,8 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_FORGE_filename_unofficial() {
-        let info = parse_FORGE_filename(
+    fn test_parse_forge_filename_unofficial() {
+        let info = parse_forge_filename(
             "Forge-unofficial_26.02.0-trunk_Cix-acpi_trixie_edge_6.19.4_minimal.img.xz",
         )
         .unwrap();
@@ -186,21 +186,21 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_FORGE_filename_minimal_no_desktop() {
+    fn test_parse_forge_filename_minimal_no_desktop() {
         let info =
-            parse_FORGE_filename("FORGE_26.2.1_Nanopim4v2_trixie_current_6.18.8_minimal.img")
+            parse_forge_filename("FORGE_26.2.1_Nanopim4v2_trixie_current_6.18.8_minimal.img")
                 .unwrap();
         assert_eq!(info.board_slug, "nanopim4v2");
         assert_eq!(info.desktop.as_deref(), Some("minimal"));
     }
 
     #[test]
-    fn test_parse_FORGE_filename_not_Forge() {
-        assert!(parse_FORGE_filename("ubuntu-24.04-desktop.img.xz").is_none());
+    fn test_parse_forge_filename_not_forge() {
+        assert!(parse_forge_filename("ubuntu-24.04-desktop.img.xz").is_none());
     }
 
     #[test]
-    fn test_parse_FORGE_filename_too_short() {
-        assert!(parse_FORGE_filename("FORGE_25.02.0.img").is_none());
+    fn test_parse_forge_filename_too_short() {
+        assert!(parse_forge_filename("FORGE_25.02.0.img").is_none());
     }
 }

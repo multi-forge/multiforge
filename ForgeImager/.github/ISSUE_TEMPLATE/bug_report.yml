@@ -1,29 +1,29 @@
-name: Bug Report
-description: Report a bug or unexpected behavior in Forge Imager
+name: Relato de Bug (Bug Report)
+description: Relate um bug ou comportamento inesperado no Forge Imager
 title: "[Bug]: "
 labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug! Please fill out the form below to help us investigate and fix the issue.
+        Obrigado por dedicar seu tempo para relatar um bug! Por favor, preencha o formulário abaixo para nos ajudar a investigar e corrigir o problema.
 
   - type: checkboxes
     id: existing-issue
     attributes:
-      label: Prerequisites
-      description: Please confirm the following before submitting
+      label: Pré-requisitos
+      description: Por favor, confirme o seguinte antes de enviar
       options:
-        - label: I have searched the existing issues and this bug has not been reported before
+        - label: Eu pesquisei nas issues existentes e este bug não foi relatado anteriormente
           required: true
-        - label: I am using the latest version of Forge Imager
+        - label: Estou usando a versão mais recente do Forge Imager
           required: true
 
   - type: dropdown
     id: os
     attributes:
-      label: Operating System
-      description: Which operating system are you using?
+      label: Sistema Operacional
+      description: Qual sistema operacional você está usando?
       options:
         - Windows 10
         - Windows 11
@@ -32,108 +32,108 @@ body:
         - Linux (Ubuntu)
         - Linux (Debian)
         - Linux (Linux Mint)
-        - Linux (Other Debian-based)
+        - Linux (Outro baseado em Debian)
     validations:
       required: true
 
   - type: input
     id: os-version
     attributes:
-      label: OS Version
-      description: Specific version of your operating system
-      placeholder: "e.g., Windows 11 23H2, macOS 14.2, Ubuntu 24.04"
+      label: Versão do SO
+      description: Versão específica do seu sistema operacional
+      placeholder: "ex: Windows 11 23H2, macOS 14.2, Ubuntu 24.04"
     validations:
       required: true
 
   - type: input
     id: app-version
     attributes:
-      label: Forge Imager Version
-      description: Version of Forge Imager (displayed at the bottom right corner of the home screen)
-      placeholder: "e.g., 1.0.0"
+      label: Versão do Forge Imager
+      description: Versão do Forge Imager (exibida no canto inferior direito da tela inicial)
+      placeholder: "ex: 1.0.0"
     validations:
       required: true
 
   - type: dropdown
     id: operation
     attributes:
-      label: Operation Type
-      description: What were you trying to do when the bug occurred?
+      label: Tipo de Operação
+      description: O que você estava tentando fazer quando o bug ocorreu?
       options:
-        - Downloading an image
-        - Flashing to SD card
-        - Flashing to USB drive
-        - Verifying a flash
-        - Selecting a board/image
-        - Using a custom image
-        - Device detection
-        - Application startup
-        - Other
+        - Baixando uma imagem
+        - Gravando em cartão SD
+        - Gravando em pendrive USB
+        - Verificando uma gravação
+        - Selecionando uma placa/imagem
+        - Usando uma imagem personalizada
+        - Detecção de dispositivo
+        - Inicialização do aplicativo
+        - Outro
     validations:
       required: true
 
   - type: input
     id: target-device
     attributes:
-      label: Target Device (if applicable)
-      description: The SD card or USB drive model/brand you were flashing to
-      placeholder: "e.g., SanDisk Ultra 32GB, Samsung EVO 64GB"
+      label: Dispositivo de Destino (se aplicável)
+      description: O modelo/marca do cartão SD ou pendrive USB no qual estava gravando
+      placeholder: "ex: SanDisk Ultra 32GB, Samsung EVO 64GB"
 
   - type: input
     id: target-board
     attributes:
-      label: Target Board (if applicable)
-      description: The Forge board you were trying to flash an image for
-      placeholder: "e.g., Orange Pi 5, Raspberry Pi 4, Khadas VIM3"
+      label: Placa de Destino (se aplicável)
+      description: A placa do Forge para a qual estava tentando gravar uma imagem
+      placeholder: "ex: Orange Pi 5, Raspberry Pi 4, Khadas VIM3"
 
   - type: textarea
     id: description
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is
-      placeholder: Describe what happened...
+      label: Descrição do Bug
+      description: Uma descrição clara e concisa do que é o bug
+      placeholder: Descreva o que aconteceu...
     validations:
       required: true
 
   - type: textarea
     id: expected
     attributes:
-      label: Expected Behavior
-      description: What did you expect to happen?
-      placeholder: Describe what should have happened...
+      label: Comportamento Esperado
+      description: O que você esperava que acontecesse?
+      placeholder: Descreva o que deveria ter acontecido...
     validations:
       required: true
 
   - type: textarea
     id: steps
     attributes:
-      label: Steps to Reproduce
-      description: Steps to reproduce the behavior
+      label: Passos para Reproduzir
+      description: Passos para reproduzir o comportamento
       placeholder: |
-        1. Open Forge Imager
-        2. Select board '...'
-        3. Click on '...'
-        4. See error
+        1. Abra o Forge Imager
+        2. Selecione a placa '...'
+        3. Clique em '...'
+        4. Veja o erro
     validations:
       required: true
 
   - type: textarea
     id: logs
     attributes:
-      label: Error Messages / Logs
+      label: Mensagens de Erro / Logs
       description: |
-        If applicable, paste any error messages or logs here.
-        You can use the "Upload Logs" feature in Forge Imager to get a paste.Forge.com link.
+        Se aplicável, cole quaisquer mensagens de erro ou logs aqui.
+        Você pode usar o recurso "Enviar Logs" no Forge Imager para obter um link temporário.
       render: shell
 
   - type: textarea
     id: screenshots
     attributes:
-      label: Screenshots
-      description: If applicable, add screenshots to help explain your problem
+      label: Capturas de Tela
+      description: Se aplicável, adicione capturas de tela para ajudar a explicar seu problema
 
   - type: textarea
     id: additional
     attributes:
-      label: Additional Context
-      description: Add any other context about the problem here
+      label: Contexto Adicional
+      description: Adicione qualquer outro contexto sobre o problema aqui

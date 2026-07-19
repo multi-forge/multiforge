@@ -215,7 +215,7 @@ export async function getCachedVendorLogo(vendorSlug: string): Promise<string | 
 
 /** Detect an Forge host via /etc/Forge-release (Linux only); null otherwise */
 export async function getForgeRelease(): Promise<ForgeReleaseInfo | null> {
-  return invoke('get_Forge_release');
+  return invoke('get_forge_release');
 }
 
 // === QDL (Qualcomm EDL) operations ===

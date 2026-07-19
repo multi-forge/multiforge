@@ -1,27 +1,28 @@
-# Development Guide
+# Guia de Desenvolvimento
 
-Complete guide for setting up, building, and contributing to Forge Imager.
+Guia completo para configuração, compilação e contribuição para o Forge Imager.
 
-## Table of Contents
+## Sumário
 
-1. [Quick Start](#quick-start)
-2. [Prerequisites](#prerequisites)
-3. [Step-by-Step Setup](#step-by-step-setup)
-4. [Development Workflow](#development-workflow)
-5. [Building for Distribution](#building-for-distribution)
-6. [Project Structure](#project-structure)
-7. [Architecture Deep Dive](#architecture-deep-dive)
-8. [Tech Stack](#tech-stack)
-9. [Data Sources](#data-sources)
-10. [Quality Checks](#quality-checks)
-11. [Troubleshooting](#troubleshooting)
+1. [Início Rápido](#início-rápido)
+2. [Pré-requisitos](#pré-requisitos)
+3. [Configuração Passo a Passo](#configuração-passo-a-passo)
+4. [Fluxo de Trabalho de Desenvolvimento](#fluxo-de-trabalho-de-desenvolvimento)
+5. [Compilando para Distribuição](#compilando-para-distribuição)
+6. [Estrutura do Projeto](#estrutura-do-projeto)
+7. [Visão Geral da Arquitetura](#visão-geral-da-arquitetura)
+8. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+9. [Fontes de Dados](#fontes-de-dados)
+10. [Verificações de Qualidade](#verificações-de-qualidade)
+11. [Solução de Problemas](#solução-de-problemas)
 
 ---
 
-## Quick Start
+## Início Rápido
 
 ```bash
 git clone https://github.com/multi-forge/multi-forge.git && cd imager
+# No diretório correto do projeto:
 bash scripts/setup/install.sh
 npm install
 npm run tauri:dev
@@ -29,48 +30,48 @@ npm run tauri:dev
 
 ---
 
-## Prerequisites
+## Pré-requisitos
 
-| Requirement | Minimum | Link |
-|-------------|---------|------|
+| Requisito | Versão Mínima | Link |
+|-----------|---------------|------|
 | Node.js | 20.19.0 | [nodejs.org](https://nodejs.org) |
 | Rust | 1.77.2 | [rustup.rs](https://rustup.rs) |
-| npm | 10+ | Included with Node.js |
+| npm | 10+ | Incluído com o Node.js |
 
-### Platform-Specific
+### Dependências por Plataforma
 
 **Linux:** `libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev`
 
-**macOS:** Xcode Command Line Tools
+**macOS:** Xcode Command Line Tools (Ferramentas de Linha de Comando do Xcode)
 
 **Windows:** Visual Studio Build Tools 2022 + WebView2 Runtime
 
 ---
 
-## Step-by-Step Setup
+## Configuração Passo a Passo
 
-### 1. Clone Repository
+### 1. Clonar o Repositório
 
 ```bash
 git clone https://github.com/multi-forge/multi-forge.git
 cd imager
 ```
 
-### 2. Install System Dependencies
+### 2. Instalar Dependências do Sistema
 
-**Automated (Recommended):**
+**Automatizado (Recomendado):**
 ```bash
 bash scripts/setup/install.sh
 ```
 
-### 3. Verify Prerequisites
+### 3. Verificar Pré-requisitos
 
 ```bash
-node --version    # >= 20.19.0
-rustc --version   # >= 1.77.2
+node --version    # deve ser >= 20.19.0
+rustc --version   # deve ser >= 1.77.2
 ```
 
-### 4. Install & Run
+### 4. Instalar e Executar
 
 ```bash
 npm install
@@ -79,435 +80,435 @@ npm run tauri:dev
 
 ---
 
-## Development Workflow
+## Fluxo de Trabalho de Desenvolvimento
 
-### Available Scripts
+### Scripts Disponíveis
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Frontend only (Vite dev server) |
-| `npm run tauri:dev` | Full app with hot reload (frontend + Rust) |
-| `npm run build` | Production frontend build |
-| `npm run build:dev` | Development frontend build |
-| `npm run tauri:build` | Production distributable |
-| `npm run tauri:build:dev` | Debug build with symbols |
-| `npm run lint` | Run ESLint |
-| `npm run clean` | Clean all artifacts (node_modules, dist, target) |
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Apenas Frontend (servidor de desenvolvimento Vite) |
+| `npm run tauri:dev` | Aplicativo completo com hot reload (frontend + Rust) |
+| `npm run build` | Compilação de produção do frontend |
+| `npm run build:dev` | Compilação de desenvolvimento do frontend |
+| `npm run tauri:build` | Distribuição final de produção |
+| `npm run tauri:build:dev` | Compilação de depuração (debug) com símbolos |
+| `npm run lint` | Executa o ESLint |
+| `npm run clean` | Limpa todos os artefatos temporários (node_modules, dist, target) |
 
-### Daily Workflow
+### Fluxo Diário
 
-1. `npm run tauri:dev` - Start dev server
-2. Edit [`src/`](src/) or [`src-tauri/src/`](src-tauri/src/) - Auto reload
-3. Test changes
-4. Run quality checks before committing (see [Quality Checks](#quality-checks))
+1. `npm run tauri:dev` - Iniciar servidor de desenvolvimento
+2. Modificar arquivos em [`src/`](src/) ou [`src-tauri/src/`](src-tauri/src/) - Atualização automática
+3. Testar as alterações
+4. Executar as verificações de qualidade antes de fazer o commit (veja [Verificações de Qualidade](#verificações-de-qualidade))
 
 ---
 
-## Building for Distribution
+## Compilando para Distribuição
 
-### Single Platform
+### Única Plataforma
 
 ```bash
 ./scripts/build/build-macos.sh      # macOS universal (ARM64 + x64)
 ./scripts/build/build-linux.sh      # Linux (x64 + ARM64 via Docker)
-npm run tauri:build                  # Current platform
+npm run tauri:build                  # Plataforma atual
 ```
 
-### All Platforms
+### Todas as Plataformas
 
 ```bash
 ./scripts/build/build-all.sh
 ```
 
-### Build Options
+### Opções de Compilação
 
 ```bash
-./scripts/build/build-macos.sh --clean        # Clean build
-./scripts/build/build-macos.sh --dev          # Debug symbols
-./scripts/build/build-linux.sh --x64          # Linux x64 only
-./scripts/build/build-linux.sh --arm64        # Linux ARM64 only
-./scripts/build/build-all.sh --macos --linux  # Specific platforms
+./scripts/build/build-macos.sh --clean        # Compilação limpa
+./scripts/build/build-macos.sh --dev          # Com símbolos de depuração
+./scripts/build/build-linux.sh --x64          # Apenas Linux x64
+./scripts/build/build-linux.sh --arm64        # Apenas Linux ARM64
+./scripts/build/build-all.sh --macos --linux  # Plataformas específicas
 ```
 
-### Output
+### Saída (Builds)
 
-| Platform | Format | Location |
-|----------|--------|----------|
+| Plataforma | Formato | Diretório de Saída |
+|------------|---------|--------------------|
 | macOS | .dmg, .app | `src-tauri/target/{arch}/release/bundle/` |
 | Linux | .deb, .AppImage | `src-tauri/target/{arch}/release/bundle/` |
 | Windows | .msi, .nsis | `src-tauri/target/{arch}/release/bundle/` |
 
 ---
 
-## Project Structure
+## Estrutura do Projeto
 
 ```
 forge-imager/
-├── src/                              # React 19 Frontend
-│   ├── App.tsx                       # Main app + selection state machine
-│   ├── main.tsx                      # Entry point (i18n, theme, mount)
-│   ├── i18n.ts                       # i18n setup with dynamic locale loading
+├── src/                              # Frontend React 19
+│   ├── App.tsx                       # App principal + máquina de estados de seleção
+│   ├── main.tsx                      # Ponto de entrada (i18n, tema, montagem)
+│   ├── i18n.ts                       # Configuração de i18n com carregamento dinâmico de idiomas
 │   │
 │   ├── components/
-│   │   ├── flash/                    # Flash progress UI
-│   │   │   ├── FlashProgress.tsx     # Presentation (uses useFlashOperation hook)
-│   │   │   ├── FlashActions.tsx      # Cancel/retry/done buttons
-│   │   │   └── FlashStageIcon.tsx    # Stage icons + i18n keys
-│   │   ├── modals/                   # 4-step selection wizard
-│   │   │   ├── Modal.tsx             # Base modal (animations, exit handling)
-│   │   │   ├── ManufacturerModal.tsx # Step 1: Vendor selection
-│   │   │   ├── BoardModal.tsx        # Step 2: Board selection (image grid)
-│   │   │   ├── ImageModal.tsx        # Step 3: OS image selection (filters)
-│   │   │   ├── DeviceModal.tsx       # Step 4: Device selection (polling)
-│   │   │   └── ForgeBoardModal.tsx # Auto-detect when running on Forge
-│   │   ├── settings/                 # 5-tab settings modal
-│   │   │   ├── SettingsModal.tsx     # Container with sidebar navigation
-│   │   │   ├── AppearanceSection.tsx # Theme + language
-│   │   │   ├── PreferencesSection.tsx# MOTD, skip verify, board detection
-│   │   │   ├── StorageSection.tsx    # Cache management
-│   │   │   ├── DeveloperSection.tsx  # Dev mode + logs viewer
-│   │   │   ├── AboutSection.tsx      # Version, credits, links
-│   │   │   ├── CacheManagerModal.tsx # Cached images browser with delete
-│   │   │   └── LogsModal.tsx         # Log viewer + paste.forge.dev upload
+│   │   ├── flash/                    # UI do progresso de gravação
+│   │   │   ├── FlashProgress.tsx     # Apresentação (usa o hook useFlashOperation)
+│   │   │   ├── FlashActions.tsx      # Botões de cancelar/repetir/concluído
+│   │   │   └── FlashStageIcon.tsx    # Ícones de estágio + chaves de tradução
+│   │   ├── modals/                   # Assistente de seleção em 4 passos
+│   │   │   ├── Modal.tsx             # Modal base (animações, controle de saída)
+│   │   │   ├── ManufacturerModal.tsx # Passo 1: Seleção de fabricante
+│   │   │   ├── BoardModal.tsx        # Passo 2: Seleção de placa (grade de imagens)
+│   │   │   ├── ImageModal.tsx        # Passo 3: Seleção de imagem de SO (filtros)
+│   │   │   ├── DeviceModal.tsx       # Passo 4: Seleção de dispositivo (detecção)
+│   │   │   └── ForgeBoardModal.tsx   # Detecção automática ao rodar sob Forge
+│   │   ├── settings/                 # Modal de configurações de 5 abas
+│   │   │   ├── SettingsModal.tsx     # Container com barra lateral de navegação
+│   │   │   ├── AppearanceSection.tsx # Tema + idioma
+│   │   │   ├── PreferencesSection.tsx# MOTD, pular verificação, detecção de placas
+│   │   │   ├── StorageSection.tsx    # Gerenciamento de cache
+│   │   │   ├── DeveloperSection.tsx  # Modo dev + visualizador de logs
+│   │   │   ├── AboutSection.tsx      # Versão, créditos, links
+│   │   │   ├── CacheManagerModal.tsx # Navegador de imagens em cache com opção de exclusão
+│   │   │   └── LogsModal.tsx         # Visualizador de logs + envio para paste.forge.dev
 │   │   ├── layout/
-│   │   │   ├── Header.tsx            # App header with step indicators
-│   │   │   └── HomePage.tsx          # Main selection buttons / flash view
-│   │   └── shared/                   # Reusable UI components
-│   │       ├── BoardBadges.tsx       # Support level badges
-│   │       ├── ConfirmationDialog.tsx# Data loss / unstable image warnings
-│   │       ├── ErrorDisplay.tsx      # Error with retry + log upload
-│   │       ├── MarqueeText.tsx       # Scrolling overflow text
-│   │       ├── MotdTip.tsx           # Rotating tips from Forge API
-│   │       ├── SearchBox.tsx         # Filter input for modals
-│   │       ├── SkeletonCard.tsx      # Placeholder loaders
-│   │       ├── Toast.tsx             # Success/error notifications
-│   │       ├── UpdateModal.tsx       # App update dialog
-│   │       └── ChangelogModal.tsx    # Release notes display
+│   │   │   ├── Header.tsx            # Cabeçalho da aplicação com indicadores de passos
+│   │   │   └── HomePage.tsx          # Botões de seleção principal / tela de gravação
+│   │   └── shared/                   # Componentes de UI reutilizáveis
+│   │       ├── BoardBadges.tsx       # Badges de nível de suporte da placa
+│   │       ├── ConfirmationDialog.tsx# Avisos de perda de dados / imagens instáveis
+│   │       ├── ErrorDisplay.tsx      # Erro com botão de tentar novamente + envio de logs
+│   │       ├── MarqueeText.tsx       # Texto em rolagem horizontal (Marquee)
+│   │       ├── MotdTip.tsx           # Dicas rotativas da API do Forge
+│   │       ├── SearchBox.tsx         # Input de filtro de busca para os modais
+│   │       ├── SkeletonCard.tsx      # Loaders em efeito skeleton
+│   │       ├── Toast.tsx             # Notificações de sucesso/erro
+│   │       ├── UpdateModal.tsx       # Dialog de atualização do aplicativo
+│   │       └── ChangelogModal.tsx    # Exibição das notas de versão (release notes)
 │   │
-│   ├── hooks/                        # Custom React Hooks
-│   │   ├── useTauri.ts              # 26+ Tauri IPC command wrappers
-│   │   ├── useAsyncData.ts          # Generic async fetch (race-condition safe)
-│   │   ├── useFlashOperation.ts     # Full flash lifecycle orchestration
-│   │   ├── useVendorLogos.ts        # Logo preloading + manufacturer grouping
-│   │   ├── useSettings.ts           # Tauri Store get/set (20+ settings)
-│   │   ├── useSettingsGroup.ts      # Batch parallel settings loader
-│   │   ├── useSkeletonLoading.ts    # Min-duration skeleton display
-│   │   ├── useModalExitAnimation.ts # Exit animation with double-trigger guard
-│   │   ├── useDeviceMonitor.ts      # Device connection polling
-│   │   └── useToasts.tsx            # Global toast notification context
+│   ├── hooks/                        # Custom Hooks do React
+│   │   ├── useTauri.ts              # Wrappers de comandos IPC do Tauri (26+ comandos)
+│   │   ├── useAsyncData.ts          # Busca assíncrona genérica (proteção contra race-conditions)
+│   │   ├── useFlashOperation.ts     # Orquestração do ciclo de vida da gravação
+│   │   ├── useVendorLogos.ts        # Pré-carregamento de logos + agrupamento por fabricante
+│   │   ├── useSettings.ts           # Get/set para o plugin Tauri Store (20+ configurações)
+│   │   ├── useSettingsGroup.ts      # Carregamento paralelo em lote de configurações
+│   │   ├── useSkeletonLoading.ts    # Exibição de skeleton com duração mínima
+│   │   ├── useModalExitAnimation.ts # Animação de saída de 200ms com proteção de disparo duplo
+│   │   ├── useDeviceMonitor.ts      # Monitoramento de conexões de dispositivos
+│   │   └── useToasts.tsx            # Contexto global de notificações toast
 │   │
 │   ├── contexts/
-│   │   └── ThemeContext.tsx          # Light/dark/auto with system preference
+│   │   └── ThemeContext.tsx          # Tema claro/escuro/auto com preferência do sistema
 │   │
 │   ├── config/
-│   │   ├── constants.ts             # Polling, timing, cache, UI, settings keys
-│   │   ├── badges.ts                # Desktop env + kernel branch badge colors
-│   │   ├── os-info.ts               # OS logos, app logos, release mappings
-│   │   ├── deviceColors.ts          # Color scheme per device type
-│   │   └── i18n.ts                  # 18 supported languages + metadata
+│   │   ├── constants.ts             # Polling, timings, cache, UI, chaves de configurações
+│   │   ├── badges.ts                # Cores de badges de ambientes desktop + kernel
+│   │   ├── os-info.ts               # Logos de SO, logos de apps, mapeamento de versões
+│   │   ├── deviceColors.ts          # Esquema de cores por tipo de dispositivo
+│   │   └── i18n.ts                  # Configuração de idiomas suportados + metadados
 │   │
-│   ├── styles/                       # CSS with design tokens
-│   │   ├── theme.css                # Custom properties (colors, spacing, radius)
-│   │   ├── base.css                 # Reset, scrollbar, spinner, states
-│   │   ├── layout.css               # Page layout and containers
-│   │   ├── components.css           # Buttons, badges, cards, inputs
-│   │   ├── modal.css                # Modal animations and settings UI
-│   │   ├── flash.css                # Progress bar, stage icons, errors
-│   │   └── responsive.css           # Breakpoints (600-1400px)
+│   ├── styles/                       # CSS com Design Tokens
+│   │   ├── theme.css                # Propriedades customizadas (cores, espaçamento, cantos)
+│   │   ├── base.css                 # Reset, barras de rolagem, spinners e estados
+│   │   ├── layout.css               # Layout e containers das páginas
+│   │   ├── components.css           # Botões, badges, cards, inputs
+│   │   ├── modal.css                # Animações de modais e UI de configurações
+│   │   ├── flash.css                # Barra de progresso, ícones de estágio e erros
+│   │   └── responsive.css           # Responsividade e Breakpoints (600-1400px)
 │   │
-│   ├── types/index.ts               # BoardInfo, ImageInfo, BlockDevice, etc.
+│   ├── types/index.ts               # Interfaces BoardInfo, ImageInfo, BlockDevice, etc.
 │   ├── utils/index.ts               # formatFileSize, parseForgeFilename, etc.
 │   ├── utils/deviceUtils.ts         # isDeviceConnected, getDeviceType
-│   ├── locales/                     # 18 language JSON files
-│   └── assets/                      # Logos (Forge, OS distros)
+│   ├── locales/                     # Arquivos JSON de tradução (18 idiomas)
+│   └── assets/                      # Imagens de marcas e distribuições
 │
-├── src-tauri/                        # Rust Backend (Tauri 2)
+├── src-tauri/                        # Backend Rust (Tauri 2)
 │   ├── src/
-│   │   ├── main.rs                  # App setup, plugin init, command registration
-│   │   ├── download.rs              # HTTP streaming + SHA256 + mirror logging
-│   │   ├── decompress.rs            # XZ (multi-threaded), GZ, BZ2, ZST
-│   │   ├── cache.rs                 # LRU cache with configurable size limits
+│   │   ├── main.rs                  # Setup do aplicativo, plugins e comandos
+│   │   ├── download.rs              # Streaming HTTP + cálculo de SHA256 + logs de mirrors
+│   │   ├── decompress.rs            # Descompressão XZ (multithreaded), GZ, BZ2, ZST
+│   │   ├── cache.rs                 # Cache LRU com limite configurável de tamanho
 │   │   │
-│   │   ├── commands/                # 54 Tauri IPC commands
+│   │   ├── commands/                # Comandos Tauri IPC (54 no total)
 │   │   │   ├── board_queries.rs     # get_boards, get_images_for_board, get_block_devices
 │   │   │   ├── operations.rs        # download_image, flash_image, delete, cleanup
 │   │   │   ├── progress.rs          # get_download/flash_progress, cancel_operation
-│   │   │   ├── custom_image.rs      # select, decompress, detect board from filename
+│   │   │   ├── custom_image.rs      # select, decompress, detecção de placa pelo nome do arquivo
 │   │   │   ├── scraping.rs          # get_cached_board_image, get_cached_vendor_logo
-│   │   │   ├── settings.rs          # 25+ get/set commands (theme, cache, etc.)
-│   │   │   ├── system.rs            # open_url, locale, frontend logging, Forge detect
+│   │   │   ├── settings.rs          # Comandos get/set de configurações (25+ comandos)
+│   │   │   ├── system.rs            # open_url, locale, logs de frontend, detecção de Forge
 │   │   │   ├── update.rs            # get_github_release, is_app_in_applications
-│   │   │   └── state.rs             # AppState (cached JSON, download/flash state)
+│   │   │   └── state.rs             # AppState (JSON cacheado, estados de download/gravação)
 │   │   │
-│   │   ├── devices/                 # Platform-specific device detection
-│   │   │   ├── types.rs             # BlockDevice struct, normalize_bus_type, detect_sd
-│   │   │   ├── linux.rs             # lsblk JSON + sysfs read-only check
-│   │   │   ├── macos.rs             # DiskArbitration framework (~50ms, APFS filtering)
-│   │   │   └── windows.rs           # Win32 IOCTL (PhysicalDrive0-31)
+│   │   ├── devices/                 # Detecção de dispositivos por plataforma
+│   │   │   ├── types.rs             # Estrutura BlockDevice, normalize_bus_type, detect_sd
+│   │   │   ├── linux.rs             # Leitura do lsblk JSON + checagem de sysfs
+│   │   │   ├── macos.rs             # Framework DiskArbitration nativo (~50ms, filtros APFS)
+│   │   │   └── windows.rs           # IOCTLs de Win32 (PhysicalDrive0-31)
 │   │   │
-│   │   ├── flash/                   # Platform-specific flash operations
-│   │   │   ├── verify.rs            # Shared byte-by-byte verification
+│   │   ├── flash/                   # Operações de gravação por plataforma
+│   │   │   ├── verify.rs            # Lógica compartilhada de verificação byte a byte
 │   │   │   ├── linux/
-│   │   │   │   ├── writer.rs        # UDisks2 device open + direct I/O
-│   │   │   │   └── privileges.rs    # polkit authorization
+│   │   │   │   ├── writer.rs        # Abertura de UDisks2 descriptor + direct I/O
+│   │   │   │   └── privileges.rs    # Autorização via polkit
 │   │   │   ├── macos/
-│   │   │   │   ├── writer.rs        # authopen + /dev/rdisk raw writes
-│   │   │   │   ├── authorization.rs # Security.framework + Touch ID
-│   │   │   │   └── bindings.rs      # FFI bindings
-│   │   │   └── windows.rs           # Win32 volume lock + DeviceIoControl
+│   │   │   │   ├── writer.rs        # authopen -> escritas brutas em `/dev/rdisk*` (alinhado)
+│   │   │   │   ├── authorization.rs # Security.framework + suporte a Touch ID
+│   │   │   │   └── bindings.rs      # Bindings FFI
+│   │   │   └── windows.rs           # Bloqueio de volume Win32 + DeviceIoControl
 │   │   │
-│   │   ├── images/                  # API data parsing
-│   │   │   ├── models.rs            # BoardInfo, ImageInfo structs
-│   │   │   └── filters.rs           # Board/image extraction and filtering
+│   │   ├── images/                  # Processamento de dados da API
+│   │   │   ├── models.rs            # Structs BoardInfo, ImageInfo
+│   │   │   └── filters.rs           # Extração e filtragem de placas/imagens
 │   │   │
-│   │   ├── logging/mod.rs           # Structured logging (file + console + colors)
-│   │   ├── paste/upload.rs          # Log upload to paste.forge.dev
-│   │   ├── config/mod.rs            # All constants (URLs, buffers, timeouts, etc.)
+│   │   ├── logging/mod.rs           # Logs estruturados (arquivo + console colorido)
+│   │   ├── paste/upload.rs          # Upload de log para paste.forge.dev
+│   │   ├── config/mod.rs            # Constantes gerais (URLs, buffers, timeouts, etc.)
 │   │   └── utils/
-│   │       ├── format.rs            # parse_Forge_filename, normalize_slug, format_size
+│   │       ├── format.rs            # parse_forge_filename, normalize_slug, format_size
 │   │       ├── path.rs              # validate_cache_path, get_cache_dir
-│   │       ├── progress.rs          # ProgressTracker with throttled logging
-│   │       └── system.rs            # CPU count, recommended threads
+│   │       ├── progress.rs          # ProgressTracker com limite de frequência de escrita
+│   │       └── system.rs            # Contagem de CPU, sugestão de threads
 │   │
-│   ├── Cargo.toml                   # Rust dependencies
-│   ├── tauri.conf.json              # App config (window, bundle, updater)
-│   └── icons/                       # App icons (all platforms)
+│   ├── Cargo.toml                   # Dependências do Rust
+│   ├── tauri.conf.json              # Configurações do Tauri (janelas, bundle, atualizador)
+│   └── icons/                       # Ícones da aplicação para todas as plataformas
 │
 ├── scripts/
 │   ├── build/
-│   │   ├── build-all.sh             # Multi-platform build orchestrator
-│   │   ├── build-macos.sh           # macOS universal binary (ARM64 + x64)
-│   │   └── build-linux.sh           # Linux via Docker (x64 + ARM64)
+│   │   ├── build-all.sh             # Orquestrador de compilação multiplataforma
+│   │   ├── build-macos.sh           # Executável universal para macOS (ARM64 + x64)
+│   │   └── build-linux.sh           # Compilação Linux via Docker (x64 + ARM64)
 │   ├── setup/
-│   │   ├── install.sh               # Cross-platform installer (auto-detects OS)
-│   │   ├── install-linux.sh         # Linux deps (Ubuntu/Debian/Fedora/Arch)
-│   │   ├── install-macos.sh         # macOS deps (Homebrew + Rust)
-│   │   └── install-windows.ps1      # Windows deps (PowerShell)
+│   │   ├── install.sh               # Instalador multiplataforma (auto-detecta o SO)
+│   │   ├── install-linux.sh         # Dependências Linux (Ubuntu/Debian/Fedora/Arch)
+│   │   ├── install-macos.sh         # Dependências macOS (Homebrew + Rust)
+│   │   └── install-windows.ps1      # Dependências Windows (PowerShell)
 │   └── locales/
-│       └── sync-locales.js          # AI translation sync (OpenAI API)
+│       └── sync-locales.js          # Sincronização de traduções via IA (API OpenAI)
 │
 ├── .github/workflows/
-│   ├── maintenance-pr-check.yml     # PR validation (lint, type-check, build, security)
-│   ├── maintenance-build.yml        # Manual multi-platform builds
-│   ├── maintenance-release.yml      # Release builds with signing + notarization
-│   └── ...                          # Label sync, locale sync, cleanup
+│   ├── maintenance-pr-check.yml     # Validação de PRs (lint, tipos, build, segurança)
+│   ├── maintenance-build.yml        # Builds manuais multiplataforma
+│   ├── maintenance-release.yml      # Builds de lançamento assinado + notarização
+│   └── ...                          # Sincronização de labels, locales, etc.
 │
-├── eslint.config.js                 # ESLint flat config (strict TS rules)
-├── tsconfig.json                    # TypeScript root config
-├── vite.config.ts                   # Vite build config
-└── package.json                     # Node deps & scripts
+├── eslint.config.js                 # Configuração do ESLint (regras estritas de TS)
+│   ├── tsconfig.json                # Configuração root do TypeScript
+│   ├── vite.config.ts               # Configuração do build Vite
+│   └── package.json                 # Dependências e scripts Node
 ```
 
 ---
 
-## Architecture Deep Dive
+## Visão Geral da Arquitetura
 
-### Selection Flow & State Machine
+### Fluxo de Seleção e Máquina de Estados
 
-The app uses a linear 4-step wizard: **Manufacturer -> Board -> Image -> Device**
+O aplicativo usa um assistente linear em 4 etapas: **Fabricante -> Placa -> Imagem -> Dispositivo**
 
-State is managed in `App.tsx` with cascade invalidation — changing a selection at step N resets all downstream selections (N+1, N+2, etc.) via `resetSelectionsFrom()`.
+O estado é gerenciado no arquivo `App.tsx` com invalidação em cascata — alterar a seleção em uma etapa N zera todas as seleções posteriores (N+1, N+2, etc.) por meio do método `resetSelectionsFrom()`.
 
-### Frontend -> Backend Communication
+### Comunicação Frontend -> Backend
 
-54 Tauri IPC commands connect the React frontend to the Rust backend:
+Cinquenta e quatro comandos Tauri IPC conectam o frontend React ao backend Rust:
 
 ```
-React Component
+Componente React
   -> Hook (useTauri.ts)
-    -> invoke('command_name', { params })
-      -> Rust #[tauri::command] handler
-        -> Platform-specific logic
-          -> Progress via atomic state polling
-            -> React UI update
+    -> invoke('nome_do_comando', { parametros })
+      -> Handler #[tauri::command] do Rust
+        -> Lógica específica de plataforma
+          -> Progresso via consulta (polling) de estado atômico
+            -> Atualização da UI React
 ```
 
-Progress is tracked via **polling** (not events): the frontend polls `getDownloadProgress()` / `getFlashProgress()` every 250ms, reading atomic state from the Rust backend.
+O progresso é monitorado via **polling** (e não via eventos): o frontend solicita `getDownloadProgress()` / `getFlashProgress()` a cada 250ms, lendo os estados atômicos expostos pelo backend Rust.
 
-### Key Hook Architecture
+### Arquitetura de Hooks Principais
 
-| Hook | Purpose |
-|------|---------|
-| `useFlashOperation` | Orchestrates entire flash lifecycle (auth -> download -> decompress -> flash -> verify) with device monitoring, failure tracking, and cleanup |
-| `useAsyncData` / `useAsyncDataWhen` | Race-condition-safe async data fetching with loading/error states |
-| `useSkeletonLoading` | Prevents UI flickering with minimum 300ms skeleton display |
-| `useVendorLogos` | Preloads vendor logos, groups failures under "other", sorts by tier |
-| `useSettings` | 20+ getter/setter functions for Tauri Store plugin |
-| `useModalExitAnimation` | 200ms exit animation with double-trigger prevention |
+| Hook | Finalidade |
+|------|------------|
+| `useFlashOperation` | Orquestra todo o ciclo de vida da gravação (autorização -> download -> descompressão -> gravação -> verificação) controlando falhas, monitoramento de conexões e limpeza de temporários. |
+| `useAsyncData` / `useAsyncDataWhen` | Carregamento assíncrono seguro contra race-conditions com gerenciamento nativo de estados de erro/carregamento. |
+| `useSkeletonLoading` | Evita piscadas (flicker) na UI, forçando uma exibição mínima de 300ms dos skeletons de carregamento. |
+| `useVendorLogos` | Pré-carrega logos dos fabricantes, agrupando falhas sob a categoria "outros" e ordenando pelo nível de tier. |
+| `useSettings` | Conjunto de 20+ funções getter/setter para ler/gravar usando o plugin Tauri Store. |
+| `useModalExitAnimation` | Controla animações de saída de 200ms, protegendo contra disparos repetidos acidentais. |
 
-### Device Detection by Platform
+### Detecção de Dispositivos por Plataforma
 
-| Platform | Method | Latency | System Disk Detection |
-|----------|--------|---------|----------------------|
-| Linux | `lsblk` JSON + sysfs | ~100-200ms | `findmnt` + `lsblk PKNAME` |
-| macOS | DiskArbitration (native FFI) | ~50ms | `diskutil info /` (cached via `OnceLock`) |
-| Windows | Win32 IOCTL (PhysicalDrive0-31) | ~200ms | Drive letter "C:" mapping |
+| Plataforma | Método | Latência | Detecção de Disco de Sistema |
+|------------|--------|----------|------------------------------|
+| Linux | `lsblk` em formato JSON + sysfs | ~100-200ms | Mapeamento `findmnt` + `lsblk PKNAME` |
+| macOS | DiskArbitration (FFI nativa) | ~50ms | `diskutil info /` (cacheado via `OnceLock`) |
+| Windows | Win32 IOCTL (PhysicalDrive0-31) | ~200ms | Mapeamento da letra de unidade "C:" |
 
-### Flash Operations by Platform
+### Gravação por Plataforma
 
-| Platform | Privilege Model | Write Method | Verify Strategy |
-|----------|----------------|--------------|-----------------|
-| Linux | polkit (transparent) | UDisks2 file descriptor / direct I/O | `posix_fadvise` cache invalidation |
-| macOS | Security.framework + Touch ID | `authopen` -> `/dev/rdisk*` (raw, sector-aligned) | BufReader for sector alignment |
-| Windows | Administrator required | `CreateFileW` + `FILE_FLAG_WRITE_THROUGH` | Reopen with `FILE_FLAG_NO_BUFFERING` |
+| Plataforma | Modelo de Privilégios | Método de Escrita | Estratégia de Verificação |
+|------------|-----------------------|-------------------|---------------------------|
+| Linux | polkit (transparente) | File descriptor UDisks2 / direct I/O | Invalidação de cache via `posix_fadvise` |
+| macOS | Security.framework + Touch ID | `authopen` -> `/dev/rdisk*` (escrita direta, alinhada) | Uso de BufReader alinhado ao setor do disco |
+| Windows | Exige privilégio Administrador | `CreateFileW` + flag `FILE_FLAG_WRITE_THROUGH` | Reabertura com flag `FILE_FLAG_NO_BUFFERING` |
 
-All platforms: quick erase (64MB zeros) before flashing, `fsync` after write, shared byte-by-byte verification logic.
+Todas as plataformas executam uma limpeza rápida (escreve 64MB de zeros) antes de gravar a imagem, chamam `fsync` após a escrita e compartilham a mesma lógica byte a byte de validação final.
 
-### Download & Decompression
+### Download e Descompressão
 
-1. **Cache check** - Return cached image immediately if available (LRU, default 20GB)
-2. **Download** - HTTP streaming to `.downloading` temp file with progress tracking
-3. **Mirror logging** - Logs final URL after redirect from `dl.forge.dev` (debug mode)
-4. **SHA256 verification** - Compare compressed file hash; special `[SHA_UNAVAILABLE]` handling lets user continue without SHA
-5. **Decompression** - XZ (multi-threaded via lzma-rust2 with liblzma fallback), GZ, BZ2, ZST
-6. **Failure tracking** - Auto-deletes cached image after 3 consecutive flash failures
+1. **Checagem de cache** - Retorna imediatamente a imagem se ela já estiver baixada (cache LRU, padrão de 20GB).
+2. **Download** - Streaming HTTP para um arquivo temporário com sufixo `.downloading`, reportando progresso.
+3. **Log de Mirrors** - Registra no log de depuração o destino final da URL (após redirecionamento do `dl.forge.dev`).
+4. **Validação SHA256** - Compara o hash do arquivo baixado; em caso de `[SHA_UNAVAILABLE]`, o usuário pode optar por prosseguir sem verificação.
+5. **Descompressão** - Processamento XZ multi-thread via `lzma-rust2` com fallback para `liblzma` do sistema, com suporte adicional a GZ, BZ2 e ZST.
+6. **Exclusão de cache corrompido** - Remove automaticamente do cache imagens locais após 3 falhas seguidas de gravação do mesmo arquivo.
 
-### CSS Design Token System
+### Sistema de Estilo (Design Tokens)
 
-`theme.css` defines a complete design token system:
+O arquivo `theme.css` define os Design Tokens de toda a interface:
 
-- **Semantic colors**: `--color-success`, `--color-warning`, `--color-error`, `--color-info` (+ dark variants, backgrounds)
-- **Spacing scale**: `--space-xs` (4px) through `--space-4xl` (48px)
-- **Radius scale**: `--radius-sm` (4px) through `--radius-full` (50%)
-- **Shadows**: 3-level system (sm, md, lg) with light/dark variants
-- **Theme switching**: CSS classes `.theme-light` / `.theme-dark` + `prefers-color-scheme` auto
+- **Cores semânticas**: `--color-success`, `--color-warning`, `--color-error`, `--color-info` (e suas variantes escuras e de contraste)
+- **Espaçamento**: De `--space-xs` (4px) até `--space-4xl` (48px)
+- **Cantos arredondados**: De `--radius-sm` (4px) até `--radius-full` (50%)
+- **Sombras**: Sistema de 3 níveis (sm, md, lg) com variações claras/escuras
+- **Temas**: Classes CSS `.theme-light` / `.theme-dark` integradas ao modo automático baseado em `prefers-color-scheme`.
 
 ---
 
-## Tech Stack
+## Tecnologias Utilizadas
 
 ### Frontend
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 19.2 | UI Framework |
-| TypeScript | 5.9 | Type Safety (strict mode) |
-| Vite | 7.2 | Build Tool & Dev Server |
-| i18next | 25.7 | Internationalization (18 languages) |
-| Lucide React | 0.560 | Icon Library |
-| Tauri API | 2.9 | IPC Communication |
+| Tecnologia | Versão | Objetivo |
+|------------|---------|----------|
+| React | 19.2 | Framework de UI |
+| TypeScript | 5.9 | Tipagem estática rigorosa (strict mode) |
+| Vite | 7.2 | Compilador e Servidor Dev |
+| i18next | 25.7 | Internacionalização e traduções |
+| Lucide React | 0.560 | Biblioteca de ícones vetoriais |
+| Tauri API | 2.9 | Comunicação IPC |
 
 ### Backend
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Rust | 2021 edition | Systems Programming |
-| Tauri | 2.x | Desktop Framework |
-| Tokio | 1.x | Async Runtime |
-| Reqwest | 0.12 | HTTP Client (rustls-tls) |
-| lzma-rust2 | 0.15 | Multi-threaded XZ decompression |
-| SHA2 | 0.10 | SHA256 verification |
+| Tecnologia | Versão | Objetivo |
+|------------|---------|----------|
+| Rust | Edição 2021 | Linguagem de programação de sistemas |
+| Tauri | 2.x | Framework desktop híbrido |
+| Tokio | 1.x | Executor assíncrono (runtime) |
+| Reqwest | 0.12 | Cliente HTTP com suporte a rustls-tls |
+| lzma-rust2 | 0.15 | Descompressão multithreaded XZ |
+| SHA2 | 0.10 | Verificação criptográfica SHA256 |
 
-### Tauri Plugins
+### Plugins do Tauri
 
-| Plugin | Purpose |
-|--------|---------|
-| `tauri-plugin-store` | Persistent settings (JSON) |
-| `tauri-plugin-shell` | Open URLs in browser |
-| `tauri-plugin-dialog` | File picker dialogs |
-| `tauri-plugin-updater` | Auto-updates from GitHub Releases |
-| `tauri-plugin-process` | App restart/exit |
+| Plugin | Objetivo |
+|--------|----------|
+| `tauri-plugin-store` | Configurações persistentes em arquivos JSON |
+| `tauri-plugin-shell` | Abertura de URLs externas no navegador nativo |
+| `tauri-plugin-dialog` | Modais e seletores nativos de arquivos |
+| `tauri-plugin-updater` | Atualizações automáticas usando o GitHub Releases |
+| `tauri-plugin-process` | Controle de reinício/encerramento do processo |
 
-### Why Tauri over Electron?
+### Por que Tauri e não Electron?
 
-| Metric | Tauri | Electron |
-|--------|-------|----------|
-| Bundle Size | ~15 MB | 150-200 MB |
-| RAM Usage | ~50 MB | 200-400 MB |
-| Startup | < 1s | 2-5s |
-| Webview | System native | Bundled Chromium |
-
----
-
-## Data Sources
-
-| Data | Source |
-|------|--------|
-| Board List & Images | [github.com/multi-forge/multi-forge/Forge-images.json](https://github.com/multi-forge/multi-forge/Forge-images.json) |
-| Board Photos | [cache.forge.dev/images/272/{slug}.png](https://cache.forge.dev/images/) |
-| Vendor Logos | [cache.forge.dev/images/vendors/150/{vendor}.png](https://cache.forge.dev/images/vendors/150/) |
-| MOTD Tips | [github.com/Forge/os/main/motd.json](https://raw.githubusercontent.com/Forge/os/main/motd.json) |
-| Log Upload | [paste.forge.dev](https://paste.forge.dev) |
-| App Updates | [GitHub Releases](https://github.com/multi-forge/multi-forge/releases/latest/download/latest.json) |
+| Métrica | Tauri | Electron |
+|---------|-------|----------|
+| Tamanho do Instalador | ~15 MB | 150-200 MB |
+| Consumo de RAM | ~50 MB | 200-400 MB |
+| Tempo de Inicialização | < 1s | 2-5s |
+| Webview | Nativo do SO (Edge/Safari/Webkit) | Chromium embutido |
 
 ---
 
-## Quality Checks
+## Fontes de Dados
 
-Run **all checks** before committing:
+| Informação | URL / Origem |
+|------------|--------------|
+| Lista de Placas e Imagens | [github.com/multi-forge/multi-forge/Forge-images.json](https://github.com/multi-forge/multi-forge/Forge-images.json) |
+| Fotos das Placas | [cache.forge.dev/images/272/{slug}.png](https://cache.forge.dev/images/) |
+| Logos de Fabricantes | [cache.forge.dev/images/vendors/150/{vendor}.png](https://cache.forge.dev/images/vendors/150/) |
+| Dicas do MOTD | [github.com/Forge/os/main/motd.json](https://raw.githubusercontent.com/Forge/os/main/motd.json) |
+| Envio de Logs | [paste.forge.dev](https://paste.forge.dev) |
+| Atualizações do App | [GitHub Releases](https://github.com/multi-forge/multi-forge/releases/latest/download/latest.json) |
+
+---
+
+## Verificações de Qualidade
+
+Execute **todas as verificações** antes de criar seus commits:
 
 ### Frontend
 
 ```bash
-npm run lint           # ESLint (strict: no-explicit-any, eqeqeq, prefer-const)
-npx tsc --noEmit       # TypeScript type checking
+npm run lint           # ESLint (strict: bloqueia any, exige === e const)
+npx tsc --noEmit       # Validação de tipos do TypeScript
 ```
 
 ### Backend
 
 ```bash
 cd src-tauri
-cargo fmt              # Code formatting (must have zero diff)
-cargo clippy --all-targets --all-features -- -D warnings  # Linter (zero warnings)
+cargo fmt              # Formatação de código Rust (não deve gerar diferenças)
+cargo clippy --all-targets --all-features -- -D warnings  # Linter sem avisos
 ```
 
-### CI/CD Pipeline
+### Pipeline de Integração Contínua (CI/CD)
 
-PRs are validated automatically via GitHub Actions:
-1. Frontend lint + type check
-2. Rust fmt + clippy
-3. Build test on all 3 platforms (Linux, macOS, Windows)
-4. Security audit (`npm audit` + `cargo audit`)
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-| Issue | Solution |
-|-------|----------|
-| `cargo metadata failed` | Run `bash scripts/setup/install.sh` or install [Rust](https://rustup.rs) |
-| `glib-2.0 not found` (Linux) | Run `sudo bash scripts/setup/install-linux.sh` |
-| Xcode tools missing (macOS) | Run `xcode-select --install` |
-| VS Build Tools missing (Windows) | Run `scripts/setup/install-windows.ps1` as Administrator |
-| Node modules failing | Ensure Node.js >= 20.19.0, then `rm -rf node_modules && npm install` |
-| Version mismatch error | Sync version across `package.json`, `Cargo.toml`, `tauri.conf.json` |
-
-### Getting Help
-
-1. Search [GitHub Issues](https://github.com/multi-forge/multi-forge/issues)
-2. Check [Forge Community](https://github.com/multi-forge/multi-forge/discussions)
-3. Create issue with: OS version, `node --version`, `rustc --version`, full error log
+Os PRs são validados de forma automatizada via GitHub Actions:
+1. Validação e lint no frontend
+2. Formatação (`fmt`) e linter (`clippy`) no Rust
+3. Teste de compilação em todas as 3 plataformas (Linux, macOS, Windows)
+4. Auditoria de segurança (`npm audit` + `cargo audit`)
 
 ---
 
-## Contributing
+## Solução de Problemas
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md).
+### Problemas Comuns
 
-### Tips
+| Sintoma | Solução |
+|---------|---------|
+| `cargo metadata failed` | Execute `bash scripts/setup/install.sh` ou instale o [Rust](https://rustup.rs) |
+| `glib-2.0 not found` (Linux) | Execute `sudo bash scripts/setup/install-linux.sh` |
+| Erro de Xcode Command Line Tools (macOS) | Execute `xcode-select --install` |
+| Erro de VS Build Tools (Windows) | Execute `scripts/setup/install-windows.ps1` com privilégios de Administrador |
+| Falha ao instalar módulos Node | Certifique-se de usar Node.js >= 20.19.0, então execute `rm -rf node_modules && npm install` |
+| Erro de incompatibilidade de versão | Sincronize a versão nos arquivos `package.json`, `Cargo.toml` e `tauri.conf.json` |
 
-- Keep commits small and atomic
-- Test on multiple platforms for platform-specific changes
-- Run all quality checks before pushing
-- Update translations for user-facing text (all 18 locale files)
-- Follow existing patterns (hooks, Tauri commands, CSS variables)
+### Obtendo Ajuda
 
-### PR Process
-
-1. Fork repository
-2. `git checkout -b feature/amazing-feature`
-3. Implement + run quality checks
-4. `git push origin feature/amazing-feature`
-5. Open Pull Request (CI builds automatically)
+1. Procure nas [Issues do GitHub](https://github.com/multi-forge/multi-forge/issues)
+2. Consulte o [Fórum da Comunidade Forge](https://github.com/multi-forge/multi-forge/discussions)
+3. Crie uma nova issue contendo: versão do seu SO, saída do comando `node --version`, `rustc --version` e o log de erro completo.
 
 ---
 
-## Acknowledgments
+## Contribuindo
 
-- [Raspberry Pi Imager](https://github.com/raspberrypi/rpi-imager) — Inspiration
-- [Tauri](https://tauri.app/) — Framework
-- [i18next](https://www.i18next.com/) — Internationalization
-- [Lucide](https://lucide.dev/) — Icons
-- [Forge Community](https://github.com/multi-forge/multi-forge/discussions) — SBC support
+Contribuições são muito bem-vindas! Veja os detalhes no guia [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Dicas Importantes
+
+- Crie commits focados e atômicos.
+- Teste suas alterações em múltiplos sistemas operacionais se forem ligadas a recursos de gravação ou drivers.
+- Execute todas as verificações de qualidade localmente antes de enviar.
+- Se alterar chaves de textos traduzidos, atualize os 18 arquivos de localização em `src/locales/`.
+- Siga os padrões estabelecidos de nomenclatura, hooks e variáveis de tema.
+
+### Processo de Envio
+
+1. Faça o fork do repositório
+2. Crie sua branch: `git checkout -b feature/recurso-incrivel`
+3. Implemente as alterações e rode os testes e verificações locais
+4. Envie a branch: `git push origin feature/recurso-incrivel`
+5. Abra o Pull Request (as builds no CI serão geradas de forma automatizada)
+
+---
+
+## Agradecimentos
+
+- [Raspberry Pi Imager](https://github.com/raspberrypi/rpi-imager) — Projeto inspirador
+- [Tauri](https://tauri.app/) — Framework de desenvolvimento
+- [i18next](https://www.i18next.com/) — Internacionalização
+- [Lucide](https://lucide.dev/) — Ícones
+- [Comunidade Forge](https://github.com/multi-forge/multi-forge/discussions) — Suporte a placas de desenvolvimento e testes

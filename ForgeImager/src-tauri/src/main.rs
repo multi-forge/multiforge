@@ -174,7 +174,7 @@ fn main() {
             commands::system::log_from_frontend,
             commands::system::log_warn_from_frontend,
             commands::system::log_debug_from_frontend,
-            commands::system::get_FORGE_release,
+            commands::system::get_forge_release,
             commands::system::check_connectivity,
             commands::update::get_github_release,
             commands::update::is_app_in_applications,
