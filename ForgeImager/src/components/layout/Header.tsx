@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import ForgeLogoWhite from '../../assets/Forge-logo-white.png';
-import ForgeLogoBlack from '../../assets/Forge-logo-black.png';
+import ForgeSymbol from '../../assets/Forge-symbol.png';
+import ForgeText from '../../assets/Forge-text.png';
 import type { BoardInfo, ImageInfo, BlockDevice, SelectionStep, Manufacturer } from '../../types';
 import { isEdlImage } from '../../types';
 import { UpdateModal } from '../shared';
@@ -90,9 +90,8 @@ export function Header({
             onClick={handleLogoClick}
             title={!isFlashing ? t('header.resetTooltip') : undefined}
           >
-            {/* Black wordmark on light theme, white on dark; toggled via CSS to also cover 'auto'. */}
-            <img src={ForgeLogoBlack} alt="Forge" className="logo-main logo-main--light" />
-            <img src={ForgeLogoWhite} alt="" aria-hidden="true" className="logo-main logo-main--dark" />
+            <img src={ForgeSymbol} alt="" aria-hidden="true" className="logo-symbol" />
+            <img src={ForgeText} alt="MultiForge" className="logo-text" />
           </div>
         )}
         <div className="header-right">

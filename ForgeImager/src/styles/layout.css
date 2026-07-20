@@ -71,6 +71,7 @@
 .header-left {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .header-left.clickable {
@@ -79,53 +80,29 @@
 
 /* Push the header down so the macOS traffic lights don't overlap the logo. */
 .is-macos .header {
-  padding-top: 42px;
+  padding-top: 24px;
 }
 
-.logo-main {
-  height: 120px;
-  margin-top: -38px;
-  margin-bottom: -38px;
+.logo-symbol {
+  height: 42px;
   width: auto;
   display: block;
   object-fit: contain;
-  filter: var(--logo-filter, none);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.header-left.clickable:hover .logo-main {
+.logo-text {
+  height: 32px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.header-left.clickable:hover .logo-symbol,
+.header-left.clickable:hover .logo-text {
   transform: scale(1.04);
-  opacity: 0.9;
-}
-
-/* Theme-aware wordmark: black in light, white in dark, auto follows system. */
-.logo-main--dark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo-main--light {
-    display: none;
-  }
-  .logo-main--dark {
-    display: block;
-  }
-}
-
-.theme-light .logo-main--light {
-  display: block;
-}
-
-.theme-light .logo-main--dark {
-  display: none;
-}
-
-.theme-dark .logo-main--light {
-  display: none;
-}
-
-.theme-dark .logo-main--dark {
-  display: block;
+  opacity: 0.95;
 }
 
 /* BOARD IMAGE FALLBACK (Forge wordmark watermark) */
