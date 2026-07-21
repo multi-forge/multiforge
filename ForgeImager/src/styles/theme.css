@@ -4,8 +4,11 @@
 
 :root,
 .theme-light {
-  /* Forge Brand */
-  --Forge-orange: #f26522;
+  /* Forge Brand — amber (the flame) is the primary action color; teal (the anvil) marks
+     completion. Pulled from the actual logo mark, so the UI and the wordmark agree. */
+  --Forge-orange: #ec6f22;
+  --Forge-teal: #1e8e6d;
+  --Forge-teal-hover: #19775b;
   --Forge-red: #cc3333;
 
   /* Light Theme */
@@ -28,7 +31,9 @@
   --skeleton-shine: #f5f6f8;
 
   --accent: var(--Forge-orange);
-  --accent-hover: #e55a1c;
+  --accent-hover: #c65d1c;
+  --accent-teal: var(--Forge-teal);
+  --accent-teal-hover: var(--Forge-teal-hover);
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -42,7 +47,7 @@
 
   /* Cards floating on the glass: resting lift plus soft hover elevation */
   --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 24px -14px rgba(15, 23, 42, 0.12);
-  --card-hover-shadow: 0 24px 50px -18px rgba(15, 23, 42, 0.28), 0 0 30px -12px rgba(242, 101, 34, 0.18);
+  --card-hover-shadow: 0 24px 50px -18px rgba(15, 23, 42, 0.28), 0 0 30px -12px rgba(236, 111, 34, 0.18);
 
   /* Semantic Colors */
   --color-success: #10b981;
@@ -58,7 +63,8 @@
   --color-warning-text: #92400e;
 
   /* RGB channels for alpha compositing */
-  --accent-rgb: 242, 101, 34;
+  --accent-rgb: 236, 111, 34;
+  --accent-teal-rgb: 30, 142, 109;
   --color-error-rgb: 239, 68, 68;
   --color-warning-rgb: 245, 158, 11;
   --color-success-rgb: 16, 185, 129;
@@ -139,10 +145,11 @@
   --island-border: rgba(255, 255, 255, 0.1);
 
   --card-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.4);
-  --card-hover-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px -10px rgba(242, 101, 34, 0.2);
+  --card-hover-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px -10px rgba(236, 111, 34, 0.2);
 
   /* RGB channels for alpha compositing */
-  --accent-rgb: 242, 101, 34;
+  --accent-rgb: 236, 111, 34;
+  --accent-teal-rgb: 30, 142, 109;
   --color-error-rgb: 239, 68, 68;
   --color-warning-rgb: 245, 158, 11;
   --color-success-rgb: 16, 185, 129;
@@ -186,10 +193,11 @@
     --island-border: rgba(255, 255, 255, 0.1);
 
     --card-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.4);
-    --card-hover-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px -10px rgba(242, 101, 34, 0.2);
+    --card-hover-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px -10px rgba(236, 111, 34, 0.2);
 
     /* RGB channels for alpha compositing */
-    --accent-rgb: 242, 101, 34;
+    --accent-rgb: 236, 111, 34;
+    --accent-teal-rgb: 30, 142, 109;
     --color-error-rgb: 239, 68, 68;
     --color-success-rgb: 16, 185, 129;
 

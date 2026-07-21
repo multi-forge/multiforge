@@ -22,7 +22,9 @@
   pointer-events: auto;
 }
 
-/* Drifting warm-aurora mesh behind everything; translucent over the theme base so it reads in both light and dark. */
+/* Drifting aurora mesh behind everything, woven from both halves of the Forge mark
+   (amber flame + teal anvil) so the backdrop reads as branded, not decorative. Translucent
+   over the theme base so it works in both light and dark. */
 .app::before {
   content: '';
   position: fixed;
@@ -34,7 +36,7 @@
     radial-gradient(40% 38% at 14% 16%, rgba(var(--accent-rgb), 0.26), transparent 64%),
     radial-gradient(34% 32% at 88% 12%, rgba(255, 178, 66, 0.17), transparent 64%),
     radial-gradient(40% 40% at 92% 96%, rgba(var(--accent-rgb), 0.14), transparent 60%),
-    radial-gradient(34% 34% at 4% 98%, rgba(228, 66, 96, 0.11), transparent 60%);
+    radial-gradient(36% 36% at 4% 98%, rgba(var(--accent-teal-rgb), 0.16), transparent 62%);
   filter: var(--blur-xl);
   animation: bgDrift 38s ease-in-out infinite alternate;
 }
@@ -62,7 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px 12px;
+  padding: 16px 24px;
   background: transparent;
   flex-shrink: 0;
   z-index: 2;
@@ -84,7 +86,7 @@
 }
 
 .logo-symbol {
-  height: 64px;
+  height: 36px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -92,7 +94,7 @@
 }
 
 .logo-text {
-  height: 80px;
+  height: 27px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -200,8 +202,8 @@
 }
 
 .header-step.completed .header-step-indicator {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-teal);
+  border-color: var(--accent-teal);
   color: #fff;
 }
 
@@ -606,8 +608,8 @@
 
 .side-step.is-done .side-step__badge,
 .side-step.is-readonly .side-step__badge {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-teal);
+  border-color: var(--accent-teal);
   color: #fff;
 }
 
@@ -860,7 +862,7 @@
 }
 
 .focus-summary li svg {
-  color: var(--accent);
+  color: var(--accent-teal);
   flex-shrink: 0;
 }
 
