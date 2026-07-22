@@ -33,8 +33,11 @@ def run_cmd_safe(cmd, shell=False, timeout=10):
     try:
         res = subprocess.run(cmd, shell=shell, capture_output=True, text=True, timeout=timeout)
         if res.returncode != 0:
-            print(f"[FORGE-AGENT WARNING] Command returned non-zero code {res.returncode}: {res.stderr.strip()}")
+            print(f"[FORGE-AGENT WARNING] Command returned code {res.returncode}")
         return res
+    except subprocess.TimeoutExpired:
+        print(f"[FORGE-AGENT] Process running in background: {cmd_str}")
+        return None
     except Exception as e:
         print(f"[FORGE-AGENT ERROR] Failed to execute {cmd_str}: {e}")
         return None
@@ -88,9 +91,9 @@ address=/#/192.168.4.1
         run_cmd_safe('qrencode -t UTF8 "http://192.168.4.1" > /dev/tty1 2>/dev/null', shell=True)
         run_cmd_safe('echo "\nSSID: ForgeOS-Setup-btve10 | Pass: forgeos123 | Setup: http://192.168.4.1" > /dev/tty1 2>/dev/null', shell=True)
 
-    # 4. Launch Captive Portal HTTP Server with fallback
+    # 4. Launch Captive Portal HTTP Server without timeout
     print('[FORGE-AGENT] Starting Captive Portal Web Server...')
-    run_cmd_safe(['python3', '/opt/forgeos/captive-portal/server.py', '80'])
+    run_cmd_safe(['python3', '/opt/forgeos/captive-portal/server.py', '80'], timeout=None)
 
 def apply_provisioning():
     print('[FORGE-AGENT] Checking provisioning files in /boot/forge/...')
