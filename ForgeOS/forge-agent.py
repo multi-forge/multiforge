@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-ForgeOS Agent & First Boot Provisioning Daemon v1.3
+ForgeOS Agent & First Boot Provisioning Daemon v1.4
 Features reliable Wi-Fi AP Hotspot initialization and resolution-adapted dual QR Kiosk mode.
+Fixes dnsmasq port 53 collision and Realtek 8189fs SDIO power init.
 """
 import os
 import sys
@@ -42,9 +43,16 @@ def run_cmd_safe(cmd, shell=False, timeout=10):
         return None
 
 def setup_wifi_hardware():
-    print("[FORGE-AGENT] Initializing Realtek RTL8189FTV Wi-Fi Hardware...")
-    run_cmd_safe('modprobe 8189fs 2>/dev/null', shell=True)
+    print("[FORGE-AGENT] Initializing Realtek RTL8189FTV Wi-Fi Hardware & SDIO bus...")
+    mod_conf = "options 8189fs rtw_power_mgmt=0 rtw_enusbss=0 rtw_ips_mode=1\n"
+    try:
+        with open('/etc/modprobe.d/8189fs.conf', 'w') as f:
+            f.write(mod_conf)
+    except Exception:
+        pass
+
     run_cmd_safe('rfkill unblock all 2>/dev/null', shell=True)
+    run_cmd_safe('modprobe 8189fs 2>/dev/null', shell=True)
     run_cmd_safe('ip link set wlan0 up 2>/dev/null', shell=True)
 
 def kill_stale_port_processes():
@@ -58,7 +66,7 @@ def start_captive_portal():
     setup_wifi_hardware()
     kill_stale_port_processes()
 
-    # 1. Try hostapd & dnsmasq AP setup first
+    # 1. Generate hostapd & dnsmasq config with explicit interface binding to avoid port 53 conflicts
     hostapd_conf = """interface=wlan0
 driver=nl80211
 ssid=ForgeOS-Setup-btve10
@@ -76,6 +84,8 @@ wpa_key_mgmt=WPA-PSK
         print(f"[FORGE-AGENT WARNING] Failed to write hostapd conf: {e}")
 
     dnsmasq_conf = """interface=wlan0
+except-interface=lo
+bind-interfaces
 dhcp-range=192.168.4.10,192.168.4.250,12h
 address=/#/192.168.4.1
 """
@@ -92,6 +102,9 @@ address=/#/192.168.4.1
         run_cmd_safe('nmcli dev wifi hotspot ifname wlan0 ssid ForgeOS-Setup-btve10 password forgeos123 2>/dev/null', shell=True)
 
     run_cmd_safe('ip addr add 192.168.4.1/24 dev wlan0 2>/dev/null', shell=True)
+    
+    # Kill any stale dnsmasq process before starting dedicated wlan0 dnsmasq
+    run_cmd_safe('killall -9 dnsmasq 2>/dev/null', shell=True)
     run_cmd_safe(['dnsmasq', '-C', '/tmp/dnsmasq.conf'])
 
     # 2. Apply iptables NAT redirect for HTTP 80
