@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-ForgeOS Agent & First Boot Provisioning Daemon
-Implements Obsidian Blueprint Architecture goals for BTV E10 (Amlogic S905X2).
-Features dual QR code onboarding (Wi-Fi AP Pair + Captive Portal URL) for HDMI & Headless modes.
+ForgeOS Agent & First Boot Provisioning Daemon v1.3
+Features reliable Wi-Fi AP Hotspot initialization and resolution-adapted dual QR Kiosk mode.
 """
 import os
 import sys
@@ -42,6 +41,12 @@ def run_cmd_safe(cmd, shell=False, timeout=10):
         print(f"[FORGE-AGENT ERROR] Failed to execute {cmd_str}: {e}")
         return None
 
+def setup_wifi_hardware():
+    print("[FORGE-AGENT] Initializing Realtek RTL8189FTV Wi-Fi Hardware...")
+    run_cmd_safe('modprobe 8189fs 2>/dev/null', shell=True)
+    run_cmd_safe('rfkill unblock all 2>/dev/null', shell=True)
+    run_cmd_safe('ip link set wlan0 up 2>/dev/null', shell=True)
+
 def kill_stale_port_processes():
     print("[FORGE-AGENT] Cleaning up stale processes on port 80/8080...")
     run_cmd_safe('fuser -k 80/tcp 8080/tcp 2>/dev/null', shell=True)
@@ -50,9 +55,10 @@ def kill_stale_port_processes():
 def start_captive_portal():
     print('[FORGE-AGENT] Starting Hotspot AP & Captive Portal Mode...')
     
+    setup_wifi_hardware()
     kill_stale_port_processes()
 
-    # 1. Generate hostapd & dnsmasq config
+    # 1. Try hostapd & dnsmasq AP setup first
     hostapd_conf = """interface=wlan0
 driver=nl80211
 ssid=ForgeOS-Setup-btve10
@@ -79,6 +85,15 @@ address=/#/192.168.4.1
     except Exception as e:
         print(f"[FORGE-AGENT WARNING] Failed to write dnsmasq conf: {e}")
 
+    # Fallback AP setup via nmcli if hostapd fails
+    res_ap = run_cmd_safe(['hostapd', '-B', '/tmp/hostapd.conf'])
+    if not res_ap or res_ap.returncode != 0:
+        print("[FORGE-AGENT] hostapd fallback -> Attempting NetworkManager Wi-Fi Hotspot...")
+        run_cmd_safe('nmcli dev wifi hotspot ifname wlan0 ssid ForgeOS-Setup-btve10 password forgeos123 2>/dev/null', shell=True)
+
+    run_cmd_safe('ip addr add 192.168.4.1/24 dev wlan0 2>/dev/null', shell=True)
+    run_cmd_safe(['dnsmasq', '-C', '/tmp/dnsmasq.conf'])
+
     # 2. Apply iptables NAT redirect for HTTP 80
     run_cmd_safe(['iptables', '-t', 'nat', '-A', 'PREROUTING', '-i', 'wlan0', '-p', 'tcp', '--dport', '80', '-j', 'DNAT', '--to-destination', '192.168.4.1:80'])
     run_cmd_safe(['iptables', '-A', 'FORWARD', '-i', 'wlan0', '-p', 'tcp', '--dport', '80', '-j', 'ACCEPT'])
@@ -95,7 +110,7 @@ address=/#/192.168.4.1
         run_cmd_safe('python3 /usr/bin/forge-display-qr', shell=True)
     else:
         print('[FORGE-AGENT] Headless Mode (No HDMI). Rendering Dual ANSI QR Codes on TTY1 console...')
-        run_cmd_safe('echo "\n--- 1. CONECTAR NA WI-FI ---" > /dev/tty1', shell=True)
+        run_cmd_safe('echo "\n--- 1. CONECTAR À REDE WI-FI ---" > /dev/tty1', shell=True)
         run_cmd_safe(f'qrencode -t UTF8 "{wifi_qr_payload}" > /dev/tty1 2>/dev/null', shell=True)
         run_cmd_safe('echo "\n--- 2. ABRIR PORTAL CAPTIVO ---" > /dev/tty1', shell=True)
         run_cmd_safe(f'qrencode -t UTF8 "{url_qr_payload}" > /dev/tty1 2>/dev/null', shell=True)
