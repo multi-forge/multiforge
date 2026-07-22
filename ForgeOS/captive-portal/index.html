@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForgeOS — Captive Portal Provisioner</title>
+    <title>ForgeOS — WiFi Provisioner & Mina Setup</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
                 <div class="logo-badge">FO</div>
                 <div class="brand-info">
                     <span class="brand-title">ForgeOS</span>
-                    <span class="brand-version">v1.2 Dev Distro</span>
+                    <span class="brand-version">WiFiProvisioner v1.2</span>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@
                     <div class="step-badge">2</div>
                     <div class="step-label">
                         <span class="title">Rede Wi-Fi</span>
-                        <span class="sub">Conexão WPA/DHCP</span>
+                        <span class="sub">Scanner & Sinal dBm</span>
                     </div>
                 </div>
                 <div class="nav-step" data-step="3">
@@ -56,9 +56,9 @@
                 <div class="status-header">Status da TV Box</div>
                 <div class="status-rows">
                     <div class="row"><span class="lbl">SoC:</span><span class="val">Amlogic S905X2</span></div>
-                    <div class="row"><span class="lbl">Kernel:</span><span class="val">Linux 6.1.0-armbian</span></div>
-                    <div class="row"><span class="lbl">DRM Status:</span><span class="val tag-warn" id="sys-drm">disconnected</span></div>
-                    <div class="row"><span class="lbl">Wi-Fi MAC:</span><span class="val">B8:27:EB:4A:12:90</span></div>
+                    <div class="row"><span class="lbl">Kernel:</span><span class="val">Linux 6.18.29</span></div>
+                    <div class="row"><span class="lbl">DRM Status:</span><span class="val tag-warn" id="sys-drm">connected</span></div>
+                    <div class="row"><span class="lbl">Wi-Fi Chip:</span><span class="val">RTL8189FTV</span></div>
                 </div>
             </div>
         </aside>
@@ -67,17 +67,17 @@
         <main class="content-panel">
             <header class="header-bar">
                 <div class="header-pills">
-                    <span class="pill">SSID: <strong>ForgeOS-Setup-btve10</strong></span>
-                    <span class="pill">IP: <strong>192.168.4.1</strong></span>
+                    <span class="pill">Hotspot: <strong>ForgeOS-Setup-btve10</strong></span>
+                    <span class="pill">IP Portal: <strong>192.168.4.1</strong></span>
                 </div>
-                <span class="tag-dev">Dev Environment</span>
+                <span class="tag-dev">WiFi Provisioner Adaptado</span>
             </header>
 
             <!-- Step 1: Hardware Diagnostics (Dev Telemetry) -->
             <section class="card-step active" id="step-1">
                 <div class="card-title">
                     <h2>Telemetria de Hardware (BTV E10)</h2>
-                    <p>Mapeamento dos dados do sistema e status do Kernel DRM/KMS.</p>
+                    <p>Leitura dos dados do sistema e status do Kernel DRM/KMS.</p>
                 </div>
 
                 <div class="telemetry-table-container">
@@ -97,7 +97,7 @@
                             </tr>
                             <tr>
                                 <td>Memory (RAM)</td>
-                                <td><code id="dev-ram">460 MB / 2048 MB (22.4%)</code></td>
+                                <td><code>460 MB / 2048 MB (22.4%)</code></td>
                                 <td>LPDDR4 (Budget ≤150MB)</td>
                             </tr>
                             <tr>
@@ -112,7 +112,7 @@
                             </tr>
                             <tr>
                                 <td>HDMI Hotplug Status</td>
-                                <td><code class="val-warn" id="dev-hdmi">disconnected</code></td>
+                                <td><code class="val-success" id="dev-hdmi">connected</code></td>
                                 <td><code>/sys/class/drm/card1-HDMI-A-1/status</code></td>
                             </tr>
                             <tr>
@@ -122,7 +122,7 @@
                             </tr>
                             <tr>
                                 <td>SoC Temperature</td>
-                                <td><code id="dev-temp">47.5 °C</code></td>
+                                <td><code>47.5 °C</code></td>
                                 <td><code>/sys/class/thermal/thermal_zone0/temp</code></td>
                             </tr>
                         </tbody>
@@ -130,38 +130,65 @@
                 </div>
             </section>
 
-            <!-- Step 2: Wi-Fi Setup -->
+            <!-- Step 2: Adapted WiFi Provisioner (Scanner, Signal dBm, Hidden SSID) -->
             <section class="card-step" id="step-2">
-                <div class="card-title">
-                    <h2>Configuração de Rede Wi-Fi</h2>
-                    <p>Credenciais WPA2/WPA3 para conexão da TV Box.</p>
-                </div>
-
-                <div class="form-section">
-                    <label class="form-label">Redes Encontradas</label>
-                    <div class="wifi-grid">
-                        <div class="wifi-option selected" onclick="selectWifi('UNESP-Academica')">
-                            <span>📶 UNESP-Academica</span>
-                            <span class="wifi-sec">WPA2/WPA3</span>
-                        </div>
-                        <div class="wifi-option" onclick="selectWifi('Lab-GASI-5G')">
-                            <span>📶 Lab-GASI-5G</span>
-                            <span class="wifi-sec">WPA2-PSK</span>
-                        </div>
-                        <div class="wifi-option" onclick="selectWifi('Rede-Hospitalar-SUS')">
-                            <span>📶 Rede-Hospitalar-SUS</span>
-                            <span class="wifi-sec">WPA2 Enterprise</span>
-                        </div>
+                <div class="card-title-row">
+                    <div class="card-title">
+                        <h2>Scanner de Redes Sem Fio</h2>
+                        <p>Selecione uma rede detectada pelo chip RTL8189FTV ou insira manualmente.</p>
                     </div>
+                    <button class="btn btn-secondary btn-icon" id="btn-refresh-wifi" onclick="scanWifiNetworks()">
+                        <span class="icon-refresh" id="refresh-icon">🔄</span> Atualizar Redes
+                    </button>
                 </div>
 
-                <div class="grid-2">
+                <div class="wifi-table-container">
+                    <table class="dev-table wifi-scan-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"></th>
+                                <th>SSID da Rede</th>
+                                <th>Sinal (dBm)</th>
+                                <th>Segurança</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wifi-scan-list">
+                            <tr onclick="selectWifiRow('UNESP-Academica', '-52 dBm (Forte)')">
+                                <td><input type="radio" name="wifi_radio" value="UNESP-Academica" checked></td>
+                                <td><strong>UNESP-Academica</strong></td>
+                                <td><span class="signal-badge strong">📶 -52 dBm (Excelente)</span></td>
+                                <td><span class="sec-badge">WPA2/WPA3</span></td>
+                            </tr>
+                            <tr onclick="selectWifiRow('Lab-GASI-5G', '-68 dBm (Médio)')">
+                                <td><input type="radio" name="wifi_radio" value="Lab-GASI-5G"></td>
+                                <td><strong>Lab-GASI-5G</strong></td>
+                                <td><span class="signal-badge medium">📶 -68 dBm (Bom)</span></td>
+                                <td><span class="sec-badge">WPA2-PSK</span></td>
+                            </tr>
+                            <tr onclick="selectWifiRow('Rede-Hospitalar-SUS', '-78 dBm (Fraco)')">
+                                <td><input type="radio" name="wifi_radio" value="Rede-Hospitalar-SUS"></td>
+                                <td><strong>Rede-Hospitalar-SUS</strong></td>
+                                <td><span class="signal-badge weak">📶 -78 dBm (Regular)</span></td>
+                                <td><span class="sec-badge">WPA2 Enterprise</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="toggle-hidden-wifi" onchange="toggleHiddenWifi(this.checked)">
+                        <span>Inserir SSID de Rede Oculta / Manualmente</span>
+                    </label>
+                </div>
+
+                <div class="grid-2" id="wifi-inputs-row">
                     <div class="form-group">
-                        <label for="wifi-ssid">SSID da Rede</label>
+                        <label for="wifi-ssid">SSID Selecionado</label>
                         <input type="text" id="wifi-ssid" value="UNESP-Academica">
                     </div>
                     <div class="form-group">
-                        <label for="wifi-pass">Senha WPA / Passphrase</label>
+                        <label for="wifi-pass">Senha de Acesso (WPA Passphrase)</label>
                         <input type="password" id="wifi-pass" placeholder="••••••••••••">
                     </div>
                 </div>
@@ -169,12 +196,12 @@
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="dhcp-check" checked>
-                        <span>Ativar DHCP (Obter IP automático)</span>
+                        <span>Ativar DHCP (Obter IP automático da rede)</span>
                     </label>
                 </div>
             </section>
 
-            <!-- Step 3: Mina Assistant Config -->
+            <!-- Step 3: Mina Assistant Config (Groq / Cerebras API + Mutually Exclusive Window Selector) -->
             <section class="card-step" id="step-3">
                 <div class="card-title">
                     <h2>Configuração da Mina Assistente</h2>

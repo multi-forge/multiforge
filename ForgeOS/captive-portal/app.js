@@ -1,4 +1,4 @@
-// ForgeOS Dev Provisioner Logic
+// ForgeOS WiFiProvisioner Dev Logic
 let currentStep = 1;
 const totalSteps = 4;
 
@@ -11,6 +11,7 @@ const state = {
     wifiSSID: 'UNESP-Academica',
     wifiPass: '',
     dhcp: true,
+    isHiddenWifi: false,
     apiProvider: 'groq',
     apiBaseUrl: 'https://api.groq.com/openai/v1',
     apiKey: '',
@@ -51,12 +52,73 @@ function prevStep() {
     }
 }
 
-function selectWifi(ssid) {
+function selectWifiRow(ssid, signalInfo) {
     state.wifiSSID = ssid;
     document.getElementById('wifi-ssid').value = ssid;
-    
-    document.querySelectorAll('.wifi-option').forEach(opt => opt.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
+
+    document.querySelectorAll('#wifi-scan-list tr').forEach(tr => {
+        const radio = tr.querySelector('input[type="radio"]');
+        if (radio && radio.value === ssid) {
+            radio.checked = true;
+            tr.classList.add('selected');
+        } else {
+            if (radio) radio.checked = false;
+            tr.classList.remove('selected');
+        }
+    });
+}
+
+function toggleHiddenWifi(checked) {
+    state.isHiddenWifi = checked;
+    const ssidInput = document.getElementById('wifi-ssid');
+    if (checked) {
+        ssidInput.value = '';
+        ssidInput.placeholder = 'Digite o SSID da rede oculta...';
+        ssidInput.focus();
+    } else {
+        ssidInput.value = state.wifiSSID || 'UNESP-Academica';
+    }
+}
+
+function scanWifiNetworks() {
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('spin');
+
+    fetch('/api/wifi/scan')
+        .then(res => res.json())
+        .then(data => {
+            if (data.networks && data.networks.length > 0) {
+                renderScanResults(data.networks);
+            }
+        })
+        .catch(err => console.log('Simulação de scan Wi-Fi ativo:', err))
+        .finally(() => {
+            setTimeout(() => icon.classList.remove('spin'), 800);
+        });
+}
+
+function renderScanResults(networks) {
+    const tbody = document.getElementById('wifi-scan-list');
+    tbody.innerHTML = '';
+
+    networks.forEach((net, idx) => {
+        const tr = document.createElement('tr');
+        const isChecked = idx === 0 ? 'checked' : '';
+        const signalClass = net.rssi >= -60 ? 'strong' : (net.rssi >= -75 ? 'medium' : 'weak');
+        
+        tr.onclick = () => selectWifiRow(net.ssid, `${net.rssi} dBm`);
+        tr.innerHTML = `
+            <td><input type="radio" name="wifi_radio" value="${net.ssid}" ${isChecked}></td>
+            <td><strong>${net.ssid}</strong></td>
+            <td><span class="signal-badge ${signalClass}">📶 ${net.rssi} dBm (${net.signal_desc})</span></td>
+            <td><span class="sec-badge">${net.security}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (networks.length > 0) {
+        selectWifiRow(networks[0].ssid, `${networks[0].rssi} dBm`);
+    }
 }
 
 function updateApiBaseUrl() {

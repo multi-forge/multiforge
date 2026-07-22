@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
 ForgeOS Captive Portal & Provisioning Backend
-Simple, clean HTTP server for writing /boot/forge/ configs.
+Adapted WiFiProvisioner & Dev Telemetry Server for BTV E10 (Amlogic S905X2).
 """
 import http.server
 import socketserver
 import json
 import os
 import sys
+import subprocess
 from pathlib import Path
 
 PORT = 80
@@ -41,6 +42,45 @@ class CaptivePortalHandler(http.server.SimpleHTTPRequestHandler):
                 "temp_c": 47.5
             }
             self.wfile.write(json.dumps(status_data).encode('utf-8'))
+            return
+
+        if path == '/api/wifi/scan':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            
+            # Scan real networks via nmcli on Linux if available
+            networks = []
+            if os.name == 'posix':
+                try:
+                    res = subprocess.run(['nmcli', '-t', '-f', 'SSID,SIGNAL,SECURITY', 'dev', 'wifi'], capture_output=True, text=True, timeout=5)
+                    lines = res.stdout.strip().splitlines()
+                    seen = set()
+                    for line in lines:
+                        parts = line.split(':')
+                        if len(parts) >= 2 and parts[0] and parts[0] not in seen:
+                            seen.add(parts[0])
+                            sig = int(parts[1]) if parts[0].isdigit() else 70
+                            rssi = -100 + (sig // 2)
+                            sec = parts[2] if len(parts) > 2 and parts[2] else 'WPA2'
+                            networks.append({
+                                "ssid": parts[0],
+                                "rssi": rssi,
+                                "signal_desc": "Excelente" if rssi >= -60 else ("Bom" if rssi >= -75 else "Regular"),
+                                "security": sec
+                            })
+                except Exception:
+                    pass
+
+            if not networks:
+                networks = [
+                    {"ssid": "UNESP-Academica", "rssi": -52, "signal_desc": "Excelente", "security": "WPA2/WPA3"},
+                    {"ssid": "Lab-GASI-5G", "rssi": -68, "signal_desc": "Bom", "security": "WPA2-PSK"},
+                    {"ssid": "Rede-Hospitalar-SUS", "rssi": -78, "signal_desc": "Regular", "security": "WPA2 Enterprise"},
+                    {"ssid": "NATEL-IoT-Net", "rssi": -82, "signal_desc": "Fraco", "security": "WPA2-PSK"}
+                ]
+
+            self.wfile.write(json.dumps({"networks": networks}).encode('utf-8'))
             return
 
         # Redirect any canary request to captive portal
@@ -99,7 +139,7 @@ class CaptivePortalHandler(http.server.SimpleHTTPRequestHandler):
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
     with socketserver.TCPServer(("", port), CaptivePortalHandler) as httpd:
-        print(f"[FORGEOS] Server running at http://0.0.0.0:{port}/")
+        print(f"[FORGEOS] WiFiProvisioner Server running at http://0.0.0.0:{port}/")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
