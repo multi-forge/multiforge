@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-ForgeOS 1:1 Pixel-Grid Native Kiosk Display Generator v1.5
-Mapped 1-to-1 with BTV E10 Framebuffer (1024x768 32bpp) for zero blur, zero ghosting,
-and ultra-crisp typography on HDMI monitors.
+ForgeOS 1:1 Pixel-Grid Native Kiosk Display Generator v1.6
+Updated Wi-Fi Hotspot SSID to 'ForgeOS'.
+Mapped 1-to-1 with BTV E10 Framebuffer (1024x768 32bpp) for zero blur, zero ghosting.
 """
 import os
 import sys
@@ -45,10 +45,10 @@ def generate_display_image():
     print(f"[FORGE-DISPLAY] Native 1:1 Framebuffer Canvas: {W}x{H}")
 
     run_cmd = lambda cmd: subprocess.run(cmd, shell=True, capture_output=True)
-    wifi_qr_data = "WIFI:S:ForgeOS-Setup-btve10;T:WPA;P:forgeos123;;"
+    wifi_qr_data = "WIFI:S:ForgeOS;T:WPA;P:forgeos123;;"
     url_qr_data = "http://192.168.4.1"
 
-    # Generate QR PNGs with exact module size (s=7 -> 203x203px)
+    # Generate QR PNGs with exact module size
     run_cmd(f'qrencode -s 7 -o /tmp/qr_wifi.png "{wifi_qr_data}"')
     run_cmd(f'qrencode -s 7 -o /tmp/qr_url.png "{url_qr_data}"')
 
@@ -56,11 +56,9 @@ def generate_display_image():
         print("[FORGE-DISPLAY ERROR] Failed to generate QR PNG files.")
         return False
 
-    # Pure high-contrast dark background for zero ghosting
     canvas = Image.new('RGB', (W, H), color='#0d1117')
     draw = ImageDraw.Draw(canvas)
 
-    # Pixel-perfect Fonts for 1024x768
     font_header = get_ttf_font(26, bold=True)
     font_sub = get_ttf_font(15, bold=False)
     font_card_title = get_ttf_font(18, bold=True)
@@ -72,12 +70,10 @@ def generate_display_image():
     draw.text((W // 2, 45), "ForgeOS — Kiosk de Configuração Inicial", fill="#ffffff", font=font_header, anchor="mm")
     draw.text((W // 2, 80), "Dispositivo: BTV E10 Express (Amlogic S905X2) | Distro: ForgeOS v1.2 Pro", fill="#8b949e", font=font_sub, anchor="mm")
 
-    # Load 1:1 unscaled QR images
     img_wifi = Image.open('/tmp/qr_wifi.png').convert('RGB')
     img_url = Image.open('/tmp/qr_url.png').convert('RGB')
     qr_w, qr_h = img_wifi.size
 
-    # Card dimensions
     card_w = 440
     card_h = 550
     card_y = 120
@@ -92,7 +88,7 @@ def generate_display_image():
     canvas.paste(img_wifi, (qr1_x, qr1_y))
 
     t1_y = qr1_y + qr_h + 35
-    draw.text((c1_x + (card_w // 2), t1_y), "Rede: ForgeOS-Setup-btve10", fill="#ffffff", font=font_label_bold, anchor="mm")
+    draw.text((c1_x + (card_w // 2), t1_y), "Rede: ForgeOS", fill="#ffffff", font=font_label_bold, anchor="mm")
     draw.text((c1_x + (card_w // 2), t1_y + 30), "Senha: forgeos123", fill="#8b949e", font=font_label_regular, anchor="mm")
     draw.text((c1_x + (card_w // 2), t1_y + 75), "Escaneie para Conectar Automaticamente", fill="#3fb950", font=font_badge, anchor="mm")
 
@@ -115,13 +111,12 @@ def generate_display_image():
 
     output_path = '/tmp/forge_setup_display.png'
     canvas.save(output_path, quality=100)
-    print(f"[FORGE-DISPLAY SUCCESS] Rendered 1:1 pixel-perfect native image ({W}x{H}) to {output_path}")
+    print(f"[FORGE-DISPLAY SUCCESS] Rendered 1:1 native image ({W}x{H}) for SSID ForgeOS -> {output_path}")
     return True
 
 def render_to_framebuffer():
     if generate_display_image():
         print("[FORGE-DISPLAY] Outputting 1:1 crisp native image to framebuffer...")
-        # Run fbi without scaling (-a) to keep 1:1 pixel grid alignment
         subprocess.run('fbi -d /dev/fb0 -T 1 --noverbose /tmp/forge_setup_display.png 2>/dev/null', shell=True)
 
 if __name__ == '__main__':

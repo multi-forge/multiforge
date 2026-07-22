@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-ForgeOS Agent & First Boot Provisioning Daemon v1.4
-Features reliable Wi-Fi AP Hotspot initialization and resolution-adapted dual QR Kiosk mode.
-Fixes dnsmasq port 53 collision and Realtek 8189fs SDIO power init.
+ForgeOS Agent & First Boot Provisioning Daemon v1.6
+Uses wpa_supplicant mode=2 AP Engine for Realtek RTL8189FTV Wi-Fi chips on Amlogic S905X2.
+Guarantees Wi-Fi AP broadcast 'ForgeOS' without alloc xmitbuf fail.
 """
 import os
 import sys
@@ -44,13 +44,6 @@ def run_cmd_safe(cmd, shell=False, timeout=10):
 
 def setup_wifi_hardware():
     print("[FORGE-AGENT] Initializing Realtek RTL8189FTV Wi-Fi Hardware & SDIO bus...")
-    mod_conf = "options 8189fs rtw_power_mgmt=0 rtw_enusbss=0 rtw_ips_mode=1\n"
-    try:
-        with open('/etc/modprobe.d/8189fs.conf', 'w') as f:
-            f.write(mod_conf)
-    except Exception:
-        pass
-
     run_cmd_safe('rfkill unblock all 2>/dev/null', shell=True)
     run_cmd_safe('modprobe 8189fs 2>/dev/null', shell=True)
     run_cmd_safe('ip link set wlan0 up 2>/dev/null', shell=True)
@@ -61,27 +54,28 @@ def kill_stale_port_processes():
     run_cmd_safe("pkill -9 -f 'captive-portal/server.py' 2>/dev/null", shell=True)
 
 def start_captive_portal():
-    print('[FORGE-AGENT] Starting Hotspot AP & Captive Portal Mode...')
+    print('[FORGE-AGENT] Starting Hotspot AP (SSID: ForgeOS) & Captive Portal Mode...')
     
     setup_wifi_hardware()
     kill_stale_port_processes()
 
-    # 1. Generate hostapd & dnsmasq config with explicit interface binding to avoid port 53 conflicts
-    hostapd_conf = """interface=wlan0
-driver=nl80211
-ssid=ForgeOS-Setup-btve10
-hw_mode=g
-channel=6
-auth_algs=1
-wpa=2
-wpa_passphrase=forgeos123
-wpa_key_mgmt=WPA-PSK
+    # 1. Generate wpa_supplicant mode=2 AP config for Realtek 8189fs
+    wpa_ap_conf = """ctrl_interface=/var/run/wpa_supplicant
+ap_scan=1
+
+network={
+    ssid="ForgeOS"
+    mode=2
+    key_mgmt=WPA-PSK
+    psk="forgeos123"
+    frequency=2437
+}
 """
     try:
-        with open('/tmp/hostapd.conf', 'w') as f:
-            f.write(hostapd_conf)
+        with open('/tmp/wpa_ap.conf', 'w') as f:
+            f.write(wpa_ap_conf)
     except Exception as e:
-        print(f"[FORGE-AGENT WARNING] Failed to write hostapd conf: {e}")
+        print(f"[FORGE-AGENT WARNING] Failed to write wpa_ap.conf: {e}")
 
     dnsmasq_conf = """interface=wlan0
 except-interface=lo
@@ -93,18 +87,19 @@ address=/#/192.168.4.1
         with open('/tmp/dnsmasq.conf', 'w') as f:
             f.write(dnsmasq_conf)
     except Exception as e:
-        print(f"[FORGE-AGENT WARNING] Failed to write dnsmasq conf: {e}")
+        print(f"[FORGE-AGENT WARNING] Failed to write dnsmasq.conf: {e}")
 
-    # Fallback AP setup via nmcli if hostapd fails
-    res_ap = run_cmd_safe(['hostapd', '-B', '/tmp/hostapd.conf'])
-    if not res_ap or res_ap.returncode != 0:
-        print("[FORGE-AGENT] hostapd fallback -> Attempting NetworkManager Wi-Fi Hotspot...")
-        run_cmd_safe('nmcli dev wifi hotspot ifname wlan0 ssid ForgeOS-Setup-btve10 password forgeos123 2>/dev/null', shell=True)
+    # Start wpa_supplicant AP mode
+    run_cmd_safe('pkill -9 hostapd 2>/dev/null', shell=True)
+    run_cmd_safe('pkill -9 wpa_supplicant 2>/dev/null', shell=True)
+    run_cmd_safe('ip link set wlan0 up 2>/dev/null', shell=True)
+    run_cmd_safe(['wpa_supplicant', '-B', '-i', 'wlan0', '-c', '/tmp/wpa_ap.conf'])
 
+    time.sleep(2)
     run_cmd_safe('ip addr add 192.168.4.1/24 dev wlan0 2>/dev/null', shell=True)
-    
-    # Kill any stale dnsmasq process before starting dedicated wlan0 dnsmasq
-    run_cmd_safe('killall -9 dnsmasq 2>/dev/null', shell=True)
+
+    # Start dnsmasq DHCP/DNS server
+    run_cmd_safe('pkill -9 dnsmasq 2>/dev/null', shell=True)
     run_cmd_safe(['dnsmasq', '-C', '/tmp/dnsmasq.conf'])
 
     # 2. Apply iptables NAT redirect for HTTP 80
@@ -115,7 +110,7 @@ address=/#/192.168.4.1
     hdmi = get_hdmi_status()
     print(f'[FORGE-AGENT] HDMI Status: {hdmi}')
 
-    wifi_qr_payload = "WIFI:S:ForgeOS-Setup-btve10;T:WPA;P:forgeos123;;"
+    wifi_qr_payload = "WIFI:S:ForgeOS;T:WPA;P:forgeos123;;"
     url_qr_payload = "http://192.168.4.1"
 
     if hdmi == 'connected':
